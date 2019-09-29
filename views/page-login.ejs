@@ -42,14 +42,14 @@
                        Log into your account to unlock true power of community.
                     </div>
                 </a>
-                <form class="form-default">
+                <form method="POST" action="/page-login" class="form-default">
                     <div class="form-group">
                         <label for="loginUserName">Username</label>
-                        <input type="text" name="name" class="form-control" id="loginUserName" placeholder="azyrusmax">
+                        <input type="text" name="username" class="form-control" id="loginUserName" placeholder="azyrusmax">
                     </div>
                     <div class="form-group">
                         <label for="loginUserPassword">Password</label>
-                        <input type="password" name="name" class="form-control" id="loginUserPassword" placeholder="************">
+                        <input type="password" name="password" class="form-control" id="loginUserPassword" placeholder="************">
                     </div>
                     <div class="row">
                         <div class="col">
@@ -69,8 +69,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <a href="#" class="btn btn-secondary btn-block">Log in</a>
-                    </div>
+                            <input type="submit" class="btn btn-secondary btn-block" name="createNewAccount" id="createNewAccount" value="Log Me In">
+                            <!-- <a href="/create_new_account" class="btn btn-secondary btn-block">Create my account</a> -->
+                        </div>
                     <p>Or login with social network</p>
                     <div class="row">
                         <div class="col">

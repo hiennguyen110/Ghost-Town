@@ -33,30 +33,40 @@
     <div class="container">
         <div class="tt-loginpages-wrapper">
             <div class="tt-loginpages">
-                <a href="index.html" class="tt-block-title">
+                <a href="index" class="tt-block-title">
                     <img src="images/logo.png" alt="">
                     <div class="tt-title">
-                        Welcome to Forum19
+                        Welcome to GhostTown
                     </div>
                     <div class="tt-description">
-                        Join the forum to unlock true power of community.
+                        Join the forum to become a better programmer.
                     </div>
                 </a>
-                <form class="form-default">
+                <form method="POST" action="/page-signup" class="form-default">
                     <div class="form-group">
                         <label for="loginUserName">Username</label>
-                        <input type="text" name="name" class="form-control" id="loginUserName" placeholder="azyrusmax">
+                        <input type="text" name="username" class="form-control" id="loginUserName" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginFirstName">First Name</label>
+                        <input type="text" name="firstName" class="form-control" id="loginFirstName" placeholder="Enter first name">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginLastName">Last Name</label>
+                        <input type="text" name="lastName" class="form-control" id="loginLastName" placeholder="Enter last name">
                     </div>
                     <div class="form-group">
                         <label for="loginUserEmail">Email</label>
-                        <input type="text" name="name" class="form-control" id="loginUserEmail" placeholder="Sample@sample.com">
+                        <input type="text" name="userEmail" class="form-control" id="loginUserEmail" placeholder="programmer@programmer.com">
                     </div>
                     <div class="form-group">
                         <label for="loginUserPassword">Password</label>
-                        <input type="password" name="name" class="form-control" id="loginUserPassword" placeholder="************">
+                        <input type="password" name="password" class="form-control" id="loginUserPassword" placeholder="Enter your password">
                     </div>
+                    
                     <div class="form-group">
-                        <a href="#" class="btn btn-secondary btn-block">Create my account</a>
+                        <input type="submit" class="btn btn-secondary btn-block" name="createNewAccount" id="createNewAccount" value="Sign Me Up :]]">
+                        <!-- <a href="/create_new_account" class="btn btn-secondary btn-block">Create my account</a> -->
                     </div>
                     <p>Or signup with social network</p>
                     <div class="row">
@@ -88,7 +98,7 @@
                     <p>Already have an account? <a href="#" class="tt-underline">Login here</a></p>
                     <div class="tt-notes">
                         By signing up, signing in or continuing, I agree to
-                        Forum19’s <a href="#" class="tt-underline">Terms of Use</a> and <a href="#" class="tt-underline">Privacy Policy.</a>
+                        GhostTown 's <a href="#" class="tt-underline">Terms of Use</a> and <a href="#" class="tt-underline">Privacy Policy.</a>
                     </div>
                 </form>
             </div>
