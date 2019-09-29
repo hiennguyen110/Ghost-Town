@@ -1,0 +1,33 @@
+{
+  "name": "ghosttown",
+  "version": "1.0.0",
+  "description": "Coding forum",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hiennguyen110/GhostTown.git"
+  },
+  "author": "hnguyen110",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hiennguyen110/GhostTown/issues"
+  },
+  "homepage": "https://github.com/hiennguyen110/GhostTown#readme",
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.1.0",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
+    "mongodb": "^3.3.2",
+    "mongoose": "^5.7.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^5.0.1",
+    "request": "^2.88.0"
+  }
+}
