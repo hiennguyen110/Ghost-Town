@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
 
-mongoose.connect(DATABASE_API, {useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.DATABASE_API, {useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set("useCreateIndex", true);
 const USER_ACCOUNT_INFO_SCHEMA = new mongoose.Schema({
     username: String,
