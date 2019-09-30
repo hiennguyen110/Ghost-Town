@@ -5,7 +5,7 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const userInfoDatabase = require(__dirname + "/server_functions/user_info.js");
-const dotenv = require("dotenv");
+const dotenv = require("dotenv").config();
 
 const server = express();
 server.set("view engine", "ejs");
