@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb+srv://patsdatabase:52435798H$a@patskahootdbs-irwee.gcp.mongodb.net/USER?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(DATABASE_API, {useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set("useCreateIndex", true);
 const USER_ACCOUNT_INFO_SCHEMA = new mongoose.Schema({
     username: String,
