@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
+const userInfoDatabase = require(__dirname + "/server_functions/user_info.js");
+const dotenv = require("dotenv");
 
 const server = express();
 server.set("view engine", "ejs");
@@ -20,7 +22,7 @@ server.use(session({
 server.use(passport.initialize());
 server.use(passport.session());
 
-mongoose.connect("mongodb+srv://patsdatabase:52435798H$a@patskahootdbs-irwee.gcp.mongodb.net/USER?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.DATABASE_API, {useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set("useCreateIndex", true);
 const USER_ACCOUNT_LOGIN_SCHEMA = new mongoose.Schema({
     username: String,
@@ -73,8 +75,19 @@ server.post("/page-signup", function(req, res){
                 res.redirect("/page-signup");      
             }
         } else {
-            passport.authenticate("local")(req, res, function(){
-                res.redirect("/");
+            var username = req.body.username;
+            var firstName = req.body.firstName;
+            var lastName = req.body.lastName;
+            var userEmail = req.body.userEmail;
+            userInfoDatabase.insert_user_info(username, firstName, lastName, userEmail).then((result) => {
+                console.log("New user has been created !!!");
+                passport.authenticate("local")(req, res, function(){
+                    res.redirect("/");
+                });
+            }).catch((err) => {
+                console.log(err);
+                console.log("Can not created new user record !!!");
+                res.redirect("/page-signup");
             });
         }
     })
