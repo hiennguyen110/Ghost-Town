@@ -5,7 +5,6 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const userInfoDatabase = require(__dirname + "/server_functions/user_info.js");
-const adminInfoDatabase = require(__dirname + "/server_functions/superuser.js");
 const dotenv = require("dotenv").config();
 const path = require("path");
 
@@ -167,6 +166,36 @@ server.get("/admin", function(req, res){
         console.log("Access denied to administrator account !!!");
         res.redirect("/admin-signup");
     }
+});
+
+server.get("/admin-login", function(req, res){
+    console.log("Logging in administrator account !!!");
+
+    const user = new USER_ACCOUNT_LOGIN({
+        username: req.body.username,
+        password: req.body.password
+    });
+    req.login(user, function(err){
+        if (err){
+            console.log(err);
+        } else {
+            passport.authenticate("local", {failureRedirect: '/bad-credential'})(req, res, function(){
+                res.redirect("/");
+            });
+        }
+    });
+
+    userInfoDatabase.find_user(req.body.username).then((result) => {
+        var userRole = result.userRole;
+        if (userRole === "admin"){
+            res.redirect("/admin-login");
+        } else {
+            res.send("You do no have access to this page !!!");
+        }
+    }).catch((err) => {
+        console.log(err);
+    })
+
 });
 
 server.get("/admin-logout", function(req, res){

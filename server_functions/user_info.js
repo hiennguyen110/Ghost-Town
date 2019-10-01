@@ -24,6 +24,11 @@ const insert_user_info = function(username, firstName, lastName, userEmail, user
     return new_user.save();
 }
 
+const find_user = function(username){
+    return USER_ACCOUNT_INFO.findOne({username: username});
+}
+
 module.exports = {
-    insert_user_info: insert_user_info
+    insert_user_info: insert_user_info,
+    find_user: find_user
 }
