@@ -165,8 +165,14 @@ server.get("/admin", function(req, res){
         res.render("admin/index");
     } else {
         console.log("Access denied to administrator account !!!");
-        res.send("Administrator Access Denied !!!");
+        res.redirect("/admin-signup");
     }
+});
+
+server.get("/admin-logout", function(req, res){
+    console.log("Logging out of administrator !!!");
+    req.logOut();
+    res.redirect("/admin");
 });
 
 server.get("/admin/chart", function(req, res){
