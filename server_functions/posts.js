@@ -22,6 +22,25 @@ const create_new_post = function(author, post_category, post_title, post_content
     return new_post.save();
 }
 
+const delete_post = function(post_title){
+    return USER_POST.deleteOne({
+        post_title: post_title
+    });
+}
+
+const update_post = function(author, post_category, post_title, post_content){
+    return USER_POST.updateOne({post_title: post_title}, {
+        author: author,
+        post_category: post_category,
+        post_title: post_title,
+        post_content: post_content
+    });
+}
+
+const find_post = function(post_title){
+    return USER_POST.findOne({post_title: post_title});
+}
+
 module.exports = {
     create_new_post: create_new_post
 }
