@@ -5,6 +5,7 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const userInfoDatabase = require(__dirname + "/server_functions/user_info.js");
+const adminInfoDatabase = require(__dirname + "/server_functions/superuser.js");
 const dotenv = require("dotenv").config();
 const path = require("path");
 
@@ -37,6 +38,18 @@ const USER_ACCOUNT_LOGIN = mongoose.model("USER_LOGIN", USER_ACCOUNT_LOGIN_SCHEM
 passport.use(USER_ACCOUNT_LOGIN.createStrategy());
 passport.serializeUser(USER_ACCOUNT_LOGIN.serializeUser());
 passport.deserializeUser(USER_ACCOUNT_LOGIN.deserializeUser());
+
+const ADMINISTRATOR_ACCOUNT_SCHEMA = new mongoose.Schema({
+    username: String,
+    password: String,
+});
+ADMINISTRATOR_ACCOUNT_SCHEMA.plugin(passportLocalMongoose);
+
+const ADMIN_ACCOUNT = mongoose.model("ADMIN_LOGIN", ADMINISTRATOR_ACCOUNT_SCHEMA);
+
+passport.use(ADMIN_ACCOUNT.createStrategy());
+passport.serializeUser(ADMIN_ACCOUNT.serializeUser());
+passport.deserializeUser(ADMIN_ACCOUNT.deserializeUser());
 
 // End of passport
 
@@ -121,8 +134,49 @@ server.get("/page-logout", function(req, res){
     res.redirect("/");
 });
 
+// Admin field
+
+server.get("/admin-signup", function(req, res){
+    res.render("admin-signup");
+});
+
+server.post("/admin-signup", function(req, res){
+    ADMIN_ACCOUNT.register({username: req.body.username}, req.body.password, function(err, user){
+        if (err){
+            console.log(err);
+            if (err.name == "UserExistsError"){
+                console.log("Administrator username has been taken !!!");
+                res.redirect("/admin-signup");
+            } else {
+                res.redirect("/admin-signup");
+            }
+        } else {
+            var username = req.body.username;
+            var firstName = req.body.firstName;
+            var lastName = req.body.lastName;
+            var userEmail = req.body.userEmail;
+            adminInfoDatabase.insert_user_info(username, firstName, lastName, userEmail).then((result) => {
+                console.log("New admin account has been created !!!");
+                passport.authenticate("local")(req, res, function(){
+                    res.redirect("/admin");
+                });
+            }).catch((err) => {
+                console.log(err);
+                console.log("Can not create new admin account !!!");
+                res.redirect("/admin-signup");
+            });
+        }
+    });
+});
+
 server.get("/admin", function(req, res){
-    res.render("admin/index");
+    if (req.isAuthenticated()){
+        console.log("Gain access to administrator account !!!");
+        res.render("admin/index");
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.send("Administrator Access Denied !!!");
+    }
 });
 
 server.get("/admin/chart", function(req, res){
@@ -144,6 +198,8 @@ server.get("/admin/calendar", function(req, res){
 server.get("/admin/map", function(req, res){
     res.render("admin/map");
 });
+
+// End of Admin field
 
 server.listen(process.env.PORT || 3000, function(req, res){
     console.log("GhostTown is now on port 3000");
