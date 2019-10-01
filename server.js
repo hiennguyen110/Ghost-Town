@@ -77,7 +77,6 @@ server.post("/page-signup", function(req, res){
             var userRole = "client";
             userInfoDatabase.insert_user_info(username, firstName, lastName, userEmail, userRole).then((result) => {
                 console.log("New user has been created !!!");
-                console.log(userRole);
                 passport.authenticate("local")(req, res, function(){
                     res.redirect("/");
                 });
@@ -131,32 +130,33 @@ server.get("/admin-signup", function(req, res){
 });
 
 server.post("/admin-signup", function(req, res){
-    ADMIN_ACCOUNT.register({username: req.body.username}, req.body.password, function(err, user){
+    USER_ACCOUNT_LOGIN.register({username: req.body.username}, req.body.password, function(err, user){
         if (err){
             console.log(err);
             if (err.name == "UserExistsError"){
-                console.log("Administrator username has been taken !!!");
-                res.redirect("/admin-signup");
+                console.log("Username is already taken !!!");
+                res.redirect("/page-signup");
             } else {
-                res.redirect("/admin-signup");
+                res.redirect("/page-signup");      
             }
         } else {
             var username = req.body.username;
             var firstName = req.body.firstName;
             var lastName = req.body.lastName;
             var userEmail = req.body.userEmail;
-            adminInfoDatabase.insert_user_info(username, firstName, lastName, userEmail).then((result) => {
-                console.log("New admin account has been created !!!");
+            var userRole = "admin";
+            userInfoDatabase.insert_user_info(username, firstName, lastName, userEmail, userRole).then((result) => {
+                console.log("New user has been created !!!");
                 passport.authenticate("local")(req, res, function(){
                     res.redirect("/admin");
                 });
             }).catch((err) => {
                 console.log(err);
-                console.log("Can not create new admin account !!!");
+                console.log("Can not created new user record !!!");
                 res.redirect("/admin-signup");
             });
         }
-    });
+    })
 });
 
 server.get("/admin", function(req, res){
