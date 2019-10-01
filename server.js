@@ -39,18 +39,6 @@ passport.use(USER_ACCOUNT_LOGIN.createStrategy());
 passport.serializeUser(USER_ACCOUNT_LOGIN.serializeUser());
 passport.deserializeUser(USER_ACCOUNT_LOGIN.deserializeUser());
 
-const ADMINISTRATOR_ACCOUNT_SCHEMA = new mongoose.Schema({
-    username: String,
-    password: String,
-});
-ADMINISTRATOR_ACCOUNT_SCHEMA.plugin(passportLocalMongoose);
-
-const ADMIN_ACCOUNT = mongoose.model("ADMIN_LOGIN", ADMINISTRATOR_ACCOUNT_SCHEMA);
-
-passport.use(ADMIN_ACCOUNT.createStrategy());
-passport.serializeUser(ADMIN_ACCOUNT.serializeUser());
-passport.deserializeUser(ADMIN_ACCOUNT.deserializeUser());
-
 // End of passport
 
 server.get("/", function(req, res){
@@ -86,8 +74,10 @@ server.post("/page-signup", function(req, res){
             var firstName = req.body.firstName;
             var lastName = req.body.lastName;
             var userEmail = req.body.userEmail;
-            userInfoDatabase.insert_user_info(username, firstName, lastName, userEmail).then((result) => {
+            var userRole = "client";
+            userInfoDatabase.insert_user_info(username, firstName, lastName, userEmail, userRole).then((result) => {
                 console.log("New user has been created !!!");
+                console.log(userRole);
                 passport.authenticate("local")(req, res, function(){
                     res.redirect("/");
                 });

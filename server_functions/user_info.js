@@ -7,17 +7,19 @@ const USER_ACCOUNT_INFO_SCHEMA = new mongoose.Schema({
     username: String,
     firstName: String,
     lastName: String, 
-    userEmail: String
+    userEmail: String,
+    userRole: String
 });
 
 const USER_ACCOUNT_INFO = mongoose.model("USER_INFORMATION", USER_ACCOUNT_INFO_SCHEMA);
 
-const insert_user_info = function(username, firstName, lastName, userEmail){
+const insert_user_info = function(username, firstName, lastName, userEmail, userRole){
     const new_user = new USER_ACCOUNT_INFO({
         username: username,
         firstName: firstName,
         lastName: lastName,
-        userEmail: userEmail
+        userEmail: userEmail, 
+        userRole: userRole
     }); 
     return new_user.save();
 }
