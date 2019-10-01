@@ -10,7 +10,6 @@ const path = require("path");
 
 const server = express();
 server.set("view engine", "ejs");
-server.set('admin', path.join(__dirname, '/views/'));
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static("public"));
 
@@ -122,7 +121,22 @@ server.get("/page-logout", function(req, res){
     res.redirect("/");
 });
 
+
+
+
+
+
+
 // Admin field
+server.get("/admin", function(req, res){
+    if (req.isAuthenticated()){
+        console.log("Gain access to administrator account !!!");
+        res.render("admin/index");
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
+});
 
 server.get("/admin-signup", function(req, res){
     res.render("admin-signup");
@@ -158,44 +172,42 @@ server.post("/admin-signup", function(req, res){
     })
 });
 
-server.get("/admin", function(req, res){
-    if (req.isAuthenticated()){
-        console.log("Gain access to administrator account !!!");
-        res.render("admin/index");
-    } else {
-        console.log("Access denied to administrator account !!!");
-        res.redirect("/admin-signup");
-    }
+server.get("/admin-login", function(req, res){
+    res.render("admin-login");
 });
 
-server.get("/admin-login", function(req, res){
+server.post("/admin-login", function(req, res){
     console.log("Logging in administrator account !!!");
-
-    const user = new USER_ACCOUNT_LOGIN({
-        username: req.body.username,
-        password: req.body.password
-    });
-    req.login(user, function(err){
-        if (err){
-            console.log(err);
-        } else {
-            passport.authenticate("local", {failureRedirect: '/bad-credential'})(req, res, function(){
-                res.redirect("/");
-            });
-        }
-    });
-
     userInfoDatabase.find_user(req.body.username).then((result) => {
-        var userRole = result.userRole;
-        if (userRole === "admin"){
-            res.redirect("/admin-login");
+        console.log(result);
+        if (result.userRole != null){
+            if (result.userRole == "admin"){
+                const user = new USER_ACCOUNT_LOGIN({
+                    username: req.body.username,
+                    password: req.body.password
+                });
+                req.login(user, function(err){
+                    if (err){
+                        console.log(err);
+                    } else {
+                        passport.authenticate("local", {failureRedirect: '/bad-admin-credential'})(req, res, function(){
+                            res.redirect("/admin");
+                        });
+                    }
+                });
+            } else {
+                res.send("You do no have access to this page !!!");
+            }
         } else {
-            res.send("You do no have access to this page !!!");
+            res.send("Can not find user !!!");
         }
     }).catch((err) => {
         console.log(err);
     })
+});
 
+server.get("/bad-admin-credential", function(req, res){
+    res.send("Bad administrator credential !!!");
 });
 
 server.get("/admin-logout", function(req, res){
@@ -203,6 +215,12 @@ server.get("/admin-logout", function(req, res){
     req.logOut();
     res.redirect("/admin");
 });
+
+
+
+
+
+
 
 server.get("/admin/chart", function(req, res){
     res.render("admin/chart");
@@ -225,6 +243,16 @@ server.get("/admin/map", function(req, res){
 });
 
 // End of Admin field
+
+// 404 Error Page
+server.get("/404/404-pagenotfound", function(req, res){
+    res.render("404/404");
+});
+
+server.get("*", function(req, res){
+    res.redirect("/404/404-pagenotfound");
+});
+// End of 404 page
 
 server.listen(process.env.PORT || 3000, function(req, res){
     console.log("GhostTown is now on port 3000");
