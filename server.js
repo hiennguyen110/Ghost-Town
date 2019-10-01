@@ -129,6 +129,22 @@ server.get("/admin/chart", function(req, res){
     res.render("admin/chart");
 });
 
+server.get("/admin/table", function(req, res){
+    res.render("admin/table");
+});
+
+server.get("/admin/form", function(req, res){
+    res.render("admin/form");
+});
+
+server.get("/admin/calendar", function(req, res){
+    res.render("admin/calendar");
+});
+
+server.get("/admin/map", function(req, res){
+    res.render("admin/map");
+});
+
 server.listen(process.env.PORT || 3000, function(req, res){
     console.log("GhostTown is now on port 3000");
 });
