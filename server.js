@@ -121,17 +121,12 @@ server.get("/page-logout", function(req, res){
     res.redirect("/");
 });
 
-// Admin Pages
 server.get("/admin", function(req, res){
     res.render("admin/index");
 });
 
 server.get("/admin/chart", function(req, res){
     res.render("admin/chart");
-});
-
-server.get("/admin/form", function(req, res){
-    res.render("admin/form");
 });
 
 server.listen(process.env.PORT || 3000, function(req, res){

@@ -176,7 +176,7 @@
             // A simple way to check for HTML strings
             // Strict HTML recognition (must start with <)
             // Extracted from jQuery v1.11 source
-            _Expr = /^(?:\s*(<[\w\W]+>)[^>]*)$/;
+            _.htmlExpr = /^(?:\s*(<[\w\W]+>)[^>]*)$/;
 
 
             _.registerBreakpoints();
@@ -449,11 +449,11 @@
                 _.$prevArrow.removeClass('slick-hidden').removeAttr('aria-hidden tabindex');
                 _.$nextArrow.removeClass('slick-hidden').removeAttr('aria-hidden tabindex');
 
-                if (_Expr.test(_.options.prevArrow)) {
+                if (_.htmlExpr.test(_.options.prevArrow)) {
                     _.$prevArrow.prependTo(_.options.appendArrows);
                 }
 
-                if (_Expr.test(_.options.nextArrow)) {
+                if (_.htmlExpr.test(_.options.nextArrow)) {
                     _.$nextArrow.appendTo(_.options.appendArrows);
                 }
 
@@ -864,7 +864,7 @@
                 .removeAttr('aria-hidden aria-disabled tabindex')
                 .css('display','');
 
-            if ( _Expr.test( _.options.prevArrow )) {
+            if ( _.htmlExpr.test( _.options.prevArrow )) {
                 _.$prevArrow.remove();
             }
         }
@@ -876,7 +876,7 @@
                 .removeAttr('aria-hidden aria-disabled tabindex')
                 .css('display','');
 
-            if ( _Expr.test( _.options.nextArrow )) {
+            if ( _.htmlExpr.test( _.options.nextArrow )) {
                 _.$nextArrow.remove();
             }
         }
@@ -2907,11 +2907,11 @@
             _.$dots.remove();
         }
 
-        if (_.$prevArrow && _Expr.test(_.options.prevArrow)) {
+        if (_.$prevArrow && _.htmlExpr.test(_.options.prevArrow)) {
             _.$prevArrow.remove();
         }
 
-        if (_.$nextArrow && _Expr.test(_.options.nextArrow)) {
+        if (_.$nextArrow && _.htmlExpr.test(_.options.nextArrow)) {
             _.$nextArrow.remove();
         }
 

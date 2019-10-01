@@ -194,7 +194,7 @@ var GcalEventSource = /** @class */ (function (_super) {
         });
     };
     GcalEventSource.prototype.gcalItemToRawEventDef = function (item, gcalTimezone) {
-        var url = itemLink || null;
+        var url = item.htmlLink || null;
         // make the URLs for each event show times in the correct timezone
         if (url && gcalTimezone) {
             url = injectQsComponent(url, 'ctz=' + gcalTimezone);
