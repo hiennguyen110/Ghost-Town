@@ -52,14 +52,6 @@ server.post("/", function(req, res){
     res.render("index");
 });
 
-server.get("/index", function(req, res){
-    res.redirect("/");
-})
-
-server.post("/index", function(req, res){
-    res.redirect("/");
-});
-
 server.get("/page-signup", function(req, res){
     res.render("page-signup");
 });
@@ -110,15 +102,21 @@ server.post("/page-login", function(req, res){
         if (err){
             console.log(err);
         } else {
-            passport.authenticate("local", {successRedirect: '/', failureRedirect: '/page-login'})(req, res, function(){
+            passport.authenticate("local", {failureRedirect: '/bad-credential'})(req, res, function(){
+                res.redirect("/");
             });
         }
     });
 });
 
+server.get("/bad-credential", function(req, res){
+    console.log("Access denied !!!");
+    res.render("page-login");
+});
+
 server.get("/page-logout", function(req, res){
     req.logOut();
-    res.redirect("/page-login");
+    res.redirect("/");
 });
 
 server.listen(process.env.PORT || 3000, function(req, res){
