@@ -4168,7 +4168,7 @@ hr {
     border: none;
     outline: none; }
 
-/* button-icon (*page-create-topic.html)*/
+/* button-icon (*page-create-topic)*/
 @media (max-width: 410px) {
   .tt-w410-col-02 [class^="col"] {
     -webkit-box-flex: 0;
@@ -6345,7 +6345,7 @@ html.ie.gecko body.modal-open {
 
 /*-------  3.7 User header                      --------*/
 /*
-    user-header(*page-single-user.html)
+    user-header(*page-single-user)
 */
 .tt-user-header {
   display: -webkit-box;

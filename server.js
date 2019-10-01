@@ -6,9 +6,11 @@ const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const userInfoDatabase = require(__dirname + "/server_functions/user_info.js");
 const dotenv = require("dotenv").config();
+const path = require("path");
 
 const server = express();
 server.set("view engine", "ejs");
+server.set('admin', path.join(__dirname, '/views/'));
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static("public"));
 
@@ -117,6 +119,19 @@ server.get("/bad-credential", function(req, res){
 server.get("/page-logout", function(req, res){
     req.logOut();
     res.redirect("/");
+});
+
+// Admin Pages
+server.get("/admin", function(req, res){
+    res.render("admin/index");
+});
+
+server.get("/admin/chart", function(req, res){
+    res.render("admin/chart");
+});
+
+server.get("/admin/form", function(req, res){
+    res.render("admin/form");
 });
 
 server.listen(process.env.PORT || 3000, function(req, res){
