@@ -216,33 +216,25 @@ server.get("/admin-logout", function(req, res){
     res.redirect("/admin");
 });
 
+// End of Admin field
 
-
-
-
-
-
-server.get("/admin/chart", function(req, res){
-    res.render("admin/chart");
-});
-
-server.get("/admin/table", function(req, res){
-    res.render("admin/table");
+// Category
+server.get("/admin/view-category", function(req, res){
+    res.render("admin/gt-categories", {
+    });
 });
 
 server.get("/admin/form", function(req, res){
     res.render("admin/form");
 });
 
-server.get("/admin/calendar", function(req, res){
-    res.render("admin/calendar");
+server.post("/admin/add-category", function(req, res){
+    console.log("Adding new category");
+    var new_category = req.body.new_category;
+    console.log("New category: " + new_category);
+    res.send('Added !!!');
 });
-
-server.get("/admin/map", function(req, res){
-    res.render("admin/map");
-});
-
-// End of Admin field
+// End of categories
 
 // 404 Error Page
 server.get("/404/404-pagenotfound", function(req, res){
