@@ -1,10 +1,12 @@
 const express = require("express");
+const url = require("url");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const userInfoDatabase = require(__dirname + "/server_functions/user_info.js");
+const categoryDatabase = require(__dirname + "/server_functions/categories.js");
 const dotenv = require("dotenv").config();
 const path = require("path");
 
@@ -220,8 +222,32 @@ server.get("/admin-logout", function(req, res){
 
 // Category
 server.get("/admin/view-category", function(req, res){
-    res.render("admin/gt-categories", {
+    var emptyCat = ["Undefined", "Undefined", "Undefined"];
+    categoryDatabase.get_all_categories().then((result) => {
+        if (result != null){
+            res.render("admin/gt-categories", {
+                categories: result
+            });
+        } else {
+            console.log("Empty category database !!!");
+        }
+    }).catch((err) => {
+        console.log(err);
+        console.log("Can not load the server category !!!");
     });
+});
+
+server.get("/admin/edit-cats", function(req, res){
+    var catid = url.parse(req.url, true).query.catid;
+    // categoryDatabase.delete_category(catid);
+    res.redirect("/admin/view-category");
+});
+
+server.get("/admin/delete-cats", function(req, res){
+    var catid = url.parse(req.url, true).query.catid;
+    console.log("Trying to delete category with id " + catid);
+    categoryDatabase.delete_category(catid);
+    res.redirect("/admin/view-category"); 
 });
 
 server.get("/admin/form", function(req, res){
@@ -231,8 +257,9 @@ server.get("/admin/form", function(req, res){
 server.post("/admin/add-category", function(req, res){
     console.log("Adding new category");
     var new_category = req.body.new_category;
+    categoryDatabase.create_new_category(new_category);
     console.log("New category: " + new_category);
-    res.send('Added !!!');
+    res.redirect("/admin/view-category");
 });
 // End of categories
 

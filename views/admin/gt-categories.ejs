@@ -297,11 +297,19 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <% for (var counter = 0; counter < categories.length; ++counter) { %>
                                             <tr>
-                                                <td>Web Development</td>
-                                                <td class="text-right">Edit</td>
-                                                <td class="text-right">Remove</td>
+                                                <td><%= categories[counter].category_name %></td>
+                                            
+                                                <td class="text-right">
+                                                    <a href="/admin/edit-cats?catid=<%= categories[counter]._id %>">Edit</a>
+                                                </td>
+
+                                                <td class="text-right">
+                                                    <a href="/admin/delete-cats?catid=<%= categories[counter]._id %>">Remove</a>
+                                                </td>
                                             </tr>
+                                            <% } %>
                                         </tbody>
                                     </table>
                                 </div>
