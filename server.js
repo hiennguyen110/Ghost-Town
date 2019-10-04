@@ -222,11 +222,11 @@ server.get("/admin-logout", function(req, res){
 
 // Category
 server.get("/admin/view-category", function(req, res){
-    var emptyCat = ["Undefined", "Undefined", "Undefined"];
     categoryDatabase.get_all_categories().then((result) => {
         if (result != null){
             res.render("admin/gt-categories", {
-                categories: result
+                categories: result,
+                new_category_name: old_category_name
             });
         } else {
             console.log("Empty category database !!!");
@@ -239,8 +239,26 @@ server.get("/admin/view-category", function(req, res){
 
 server.get("/admin/edit-cats", function(req, res){
     var catid = url.parse(req.url, true).query.catid;
-    // categoryDatabase.delete_category(catid);
-    res.redirect("/admin/view-category");
+    categoryDatabase.find_cat_by_id(catid).then((result) => {
+        console.log(result);
+        old_category_name = result.category_name;
+        res.redirect("/admin/view-category");
+    }).catch((err) => {
+        console.log(err);
+        console.log("Can not find the name of category by ID");
+    });
+});
+
+server.post("/admin/edit-cats", function(req, res){
+    var catName = req.body.new_category_name;
+    categoryDatabase.update_category(old_category_name, catName).then((result) => {
+        console.log("Category name has been updated !!!");
+        old_category_name = "";
+        res.redirect("/admin/view-category");
+    }).catch((err) => {
+        console.log(err);
+        console.log("Can not update category !!!");
+    });
 });
 
 server.get("/admin/delete-cats", function(req, res){

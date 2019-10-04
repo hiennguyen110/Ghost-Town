@@ -332,7 +332,29 @@
                                             </form>
                                         </div>
                                         <div class="card-footer">
-                                            <button type="submit" class="btn btn-primary btn-sm">Create New Category </button>                                    
+                                            <button type="submit" class="btn btn-primary btn-sm">Create New Category</button>                                    
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <form action="/admin/edit-cats" method="POST">
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Enter the new category name to update
+                                        </div>
+                                        <div class="card-body card-block">
+                                            <form action="" method="post" class="form-horizontal">
+                                                <div class="row form-group">
+                                                    <div class="col-md-12">
+                                                        <input type="text" value="<%= new_category_name %>" name="new_category_name" placeholder="Name of Category" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="card-footer">
+                                            <button type="submit" class="btn btn-danger btn-sm">Update Category</button>                                    
                                         </div>
                                     </div>
                                 </div>

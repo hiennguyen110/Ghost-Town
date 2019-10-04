@@ -39,6 +39,14 @@ const find_cat_by_id = function(catID) {
     return CATEGORY.findOne({_id: catID});
 };
 
+const getnamebyid = function(catID){
+    find_cat_by_id(catID).then((result) => {
+        console.log(result);
+    }).catch((err) => {
+        console.log(err);
+    });
+}
+
 const delete_category = function(catID){
     find_cat_by_id(catID).then((result) => {
         if (result != null){
@@ -62,4 +70,6 @@ module.exports = {
     create_new_category: create_new_category,
     delete_category: delete_category,
     get_all_categories, get_all_categories,
+    find_cat_by_id: find_cat_by_id,
+    getnamebyid: getnamebyid
 }
