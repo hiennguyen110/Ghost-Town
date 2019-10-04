@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv").config();
+const dotenv = require("dotenv").config({
+    path: "../.env"
+});
 
-mongoose.connect("mongodb+srv://patsdatabase:52435798H$a@patskahootdbs-irwee.gcp.mongodb.net/CONTENT?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CATEGORY_ADDR, {useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set("useCreateIndex", true);
 const CATEGORY_SCHEMA = new mongoose.Schema({
     category_name: String,

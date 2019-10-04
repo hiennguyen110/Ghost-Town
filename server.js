@@ -221,6 +221,7 @@ server.get("/admin-logout", function(req, res){
 // End of Admin field
 
 // Category
+old_category_name = "";
 server.get("/admin/view-category", function(req, res){
     categoryDatabase.get_all_categories().then((result) => {
         if (result != null){
@@ -268,10 +269,6 @@ server.get("/admin/delete-cats", function(req, res){
     res.redirect("/admin/view-category"); 
 });
 
-server.get("/admin/form", function(req, res){
-    res.render("admin/form");
-});
-
 server.post("/admin/add-category", function(req, res){
     console.log("Adding new category");
     var new_category = req.body.new_category;
@@ -280,6 +277,33 @@ server.post("/admin/add-category", function(req, res){
     res.redirect("/admin/view-category");
 });
 // End of categories
+
+
+
+
+
+
+
+
+
+// Posts
+server.get("/admin/show-all-posts", function(req, res){
+    console.log("Rendering page ");
+    res.render("admin/posts");
+});
+
+// End of posts
+
+
+
+
+
+
+
+
+
+
+
 
 // 404 Error Page
 server.get("/404/404-pagenotfound", function(req, res){
