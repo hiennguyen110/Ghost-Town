@@ -95,15 +95,15 @@ const disapprove_post = function(post_id, callback) {
     }, {post_status: "negative"}, callback);
 }
 
-var post_author = "Hien Nguyen";
-var post_title = "PHP Learning";
-var post_content = "PHP is really good to learn !!!";
-var post_category = "PHP";
-var post_tags = "php, learning php";
-var post_comment_count = 10;
-var post_status = "negative";
-var post_date = Date.now();
-create_new_post(post_author, post_title, post_content, post_category, post_tags, post_comment_count, post_status, post_date);
+// var post_author = "Hien Nguyen";
+// var post_title = "PHP Learning";
+// var post_content = "PHP is really good to learn !!!";
+// var post_category = "PHP";
+// var post_tags = "php, learning php";
+// var post_comment_count = 10;
+// var post_status = "negative";
+// var post_date = Date.now();
+// create_new_post(post_author, post_title, post_content, post_category, post_tags, post_comment_count, post_status, post_date);
 
 module.exports = {
     create_new_post: create_new_post,
