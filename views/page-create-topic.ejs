@@ -87,7 +87,7 @@
                     <!-- toggle -->
                     <button class="tt-search-toggle" data-toggle="modal" data-target="#modalAdvancedSearch">
                        <svg class="tt-icon">
-                          <use xlink:href="#icon-search"></use>
+                          <use xlink:href="#"></use>
                         </svg>
                     </button>
                     <!-- /toggle -->
@@ -289,9 +289,9 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="inputTopicTitle">Category</label>
-                                <select class="form-control">
+                                <select name="post_category" class="form-control">
                                     <% for (var counter = 0; counter < categories.length; ++counter) { %>
-                                    <option name="post_tags" value="<% categories[counter].category_name %>"><% categories[counter].category_name %></option>
+                                    <option value="<%= categories[counter].category_name %>"><%= categories[counter].category_name %></option>
                                     <% } %>
                                 </select>
                             </div>
@@ -305,7 +305,7 @@
                     </div>
                      <div class="row">
                         <div class="col-auto ml-md-auto">
-                            <a href="#" class="btn btn-secondary btn-width-lg">Create Post</a>
+                            <input type="submit" class="btn btn-secondary btn-width-lg" value="Create Post">
                         </div>
                     </div>
                 </div>
@@ -586,7 +586,7 @@
 		</div>
 		</form>
 </div>
-<a href="page-create-topic" class="tt-btn-create-topic">
+<a href="/add-post" class="tt-btn-create-topic">
     <span class="tt-icon">
         <svg>
           <use xlink:href="#icon-create_new"></use>

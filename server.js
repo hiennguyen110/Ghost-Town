@@ -334,6 +334,7 @@ server.get("/admin/delete-post", function(req, res){
 // Create new topic
 server.get("/add-post", function(req, res){
     categoryDatabase.get_all_categories().then((result) => {
+        console.log(result);
         if (result != null){
             res.render("page-create-topic", {
                 categories: result
@@ -360,9 +361,12 @@ server.post("/add-post", function(req, res){
     var post_comment_count = 0;
     var post_status = "negative";
     var post_date = Date.now();
-    create_new_post(post_author, post_title, post_content, post_category, post_tags, post_comment_count, post_status, post_date);
+    postDatabase.create_new_post(post_author, post_title, post_content, post_category, post_tags, post_comment_count, post_status, post_date).then((result) => {
+        res.redirect("/");
+    }).catch((err) => {
+        console.log(err);
+    });
 });
-
 // End of posts
 
 
@@ -377,13 +381,13 @@ server.post("/add-post", function(req, res){
 
 
 // 404 Error Page
-server.get("/404/404-pagenotfound", function(req, res){
-    res.render("404/404");
-});
+// server.get("/404/404-pagenotfound", function(req, res){
+//     res.render("404/404");
+// });
 
-server.get("*", function(req, res){
-    res.redirect("/404/404-pagenotfound");
-});
+// server.get("*", function(req, res){
+//     res.redirect("/404/404-pagenotfound");
+// });
 // End of 404 page
 
 server.listen(process.env.PORT || 3000, function(req, res){
