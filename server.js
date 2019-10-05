@@ -224,170 +224,266 @@ server.get("/admin-logout", function(req, res){
 // Category
 old_category_name = "";
 server.get("/admin/view-category", function(req, res){
-    categoryDatabase.get_all_categories().then((result) => {
-        if (result != null){
-            res.render("admin/gt-categories", {
-                categories: result,
-                new_category_name: old_category_name
-            });
-        } else {
-            console.log("Empty category database !!!");
-        }
-    }).catch((err) => {
-        console.log(err);
-        console.log("Can not load the server category !!!");
-    });
+    if (req.isAuthenticated()){
+        categoryDatabase.get_all_categories().then((result) => {
+            if (result != null){
+                res.render("admin/gt-categories", {
+                    categories: result,
+                    new_category_name: old_category_name
+                });
+            } else {
+                console.log("Empty category database !!!");
+            }
+        }).catch((err) => {
+            console.log(err);
+            console.log("Can not load the server category !!!");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 
 server.get("/admin/edit-cats", function(req, res){
-    var catid = url.parse(req.url, true).query.catid;
-    categoryDatabase.find_cat_by_id(catid).then((result) => {
-        console.log(result);
-        old_category_name = result.category_name;
-        res.redirect("/admin/view-category");
-    }).catch((err) => {
-        console.log(err);
-        console.log("Can not find the name of category by ID");
-    });
+    if (req.isAuthenticated()){
+        var catid = url.parse(req.url, true).query.catid;
+        categoryDatabase.find_cat_by_id(catid).then((result) => {
+            console.log(result);
+            old_category_name = result.category_name;
+            res.redirect("/admin/view-category");
+        }).catch((err) => {
+            console.log(err);
+            console.log("Can not find the name of category by ID");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 
 server.post("/admin/edit-cats", function(req, res){
-    var catName = req.body.new_category_name;
-    categoryDatabase.update_category(old_category_name, catName).then((result) => {
-        console.log("Category name has been updated !!!");
-        old_category_name = "";
-        res.redirect("/admin/view-category");
-    }).catch((err) => {
-        console.log(err);
-        console.log("Can not update category !!!");
-    });
+    if (req.isAuthenticated()){
+        var catName = req.body.new_category_name;
+        categoryDatabase.update_category(old_category_name, catName).then((result) => {
+            console.log("Category name has been updated !!!");
+            old_category_name = "";
+            res.redirect("/admin/view-category");
+        }).catch((err) => {
+            console.log(err);
+            console.log("Can not update category !!!");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 
 server.get("/admin/delete-cats", function(req, res){
-    var catid = url.parse(req.url, true).query.catid;
-    categoryDatabase.delete_category(catid).then((result) => {
-        res.redirect("/admin/view-category");
-    }).catch((err) => {
-        console.log(err);
-    })
+    if (req.isAuthenticated()){
+        var catid = url.parse(req.url, true).query.catid;
+        categoryDatabase.delete_category(catid).then((result) => {
+            res.redirect("/admin/view-category");
+        }).catch((err) => {
+            console.log(err);
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 
 server.post("/admin/add-category", function(req, res){
-    console.log("Adding new category");
-    var new_category = req.body.new_category;
-    categoryDatabase.find_category(new_category).then((result) => {
-        if (result == null){
-            categoryDatabase.create_new_category(new_category,() =>{
-                res.redirect("/admin/view-category");
-            });
-        } else {
-            res.send("Duplicated Category !!!");
-        }
-    }).catch((err) => {
-        console.log(err);
-    });
+    if (req.isAuthenticated()){
+        console.log("Adding new category");
+        var new_category = req.body.new_category;
+        categoryDatabase.find_category(new_category).then((result) => {
+            if (result == null){
+                categoryDatabase.create_new_category(new_category,() =>{
+                    res.redirect("/admin/view-category");
+                });
+            } else {
+                res.send("Duplicated Category !!!");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 // End of categories
 
 // Posts
 server.get("/admin/show-all-posts", function(req, res){
-    console.log("Rendering post main page !!!");
-    postDatabase.get_all_posts().then((result) => {        
-        if (result != null){
-            res.render("admin/posts", {
-                post: result,
-            });
-        }
-    }).catch((err) => {
-        console.log(err);
-        console.log("Can not get all posts !!!");
-    });
+    if (req.isAuthenticated()){
+        console.log("Rendering post main page !!!");
+        postDatabase.get_all_posts().then((result) => {        
+            if (result != null){
+                res.render("admin/posts", {
+                    post: result,
+                });
+            }
+        }).catch((err) => {
+            console.log(err);
+            console.log("Can not get all posts !!!");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 
 server.get("/admin/approve-post", function(req, res){
-    var postID = url.parse(req.url, true).query.postid;
-    console.log("Approving post contain id: " + postID);
-    postDatabase.approve_post(postID, () => {
-        console.log("Post has been approved !!!");
-        res.redirect("/admin/show-all-posts");
-    });
+    if (req.isAuthenticated()){
+        var postID = url.parse(req.url, true).query.postid;
+        console.log("Approving post contain id: " + postID);
+        postDatabase.approve_post(postID, () => {
+            console.log("Post has been approved !!!");
+            res.redirect("/admin/show-all-posts");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 
 server.get("/admin/disapprove-post", function(req, res){
-    var postID = url.parse(req.url, true).query.postid;
-    console.log("Disapproving post contain id: " + postID);
-    postDatabase.disapprove_post(postID, () => {
-        console.log("Post has been disapproved !!!");
-        res.redirect("/admin/show-all-posts");
-    });
+    if (req.isAuthenticated()){
+        var postID = url.parse(req.url, true).query.postid;
+        console.log("Disapproving post contain id: " + postID);
+        postDatabase.disapprove_post(postID, () => {
+            console.log("Post has been disapproved !!!");
+            res.redirect("/admin/show-all-posts");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 
 server.get("/admin/delete-post", function(req, res){
-    var postID = url.parse(req.url, true).query.postid;
-    console.log("Deleting post contain id: " + postID);
-    postDatabase.delete_post_by_id(postID, () => {
-        console.log("Post has been deleted !!!");
-        res.redirect("/admin/show-all-posts");
-    });
+    if (req.isAuthenticated()){
+        var postID = url.parse(req.url, true).query.postid;
+        console.log("Deleting post contain id: " + postID);
+        postDatabase.delete_post_by_id(postID, () => {
+            console.log("Post has been deleted !!!");
+            res.redirect("/admin/show-all-posts");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 
 // Create new topic
 server.get("/add-post", function(req, res){
-    categoryDatabase.get_all_categories().then((result) => {
-        console.log(result);
-        if (result != null){
-            res.render("page-create-topic", {
-                categories: result
-            });
-        } else {
-            console.log("Empty category database !!!");
-        }
-    }).catch((err) => {
-        console.log(err);
-        console.log("Can not load the server category !!!");
-    });
+    if (req.isAuthenticated()){
+        categoryDatabase.get_all_categories().then((result) => {
+            console.log(result);
+            if (result != null){
+                res.render("page-create-topic", {
+                    categories: result
+                });
+            } else {
+                console.log("Empty category database !!!");
+            }
+        }).catch((err) => {
+            console.log(err);
+            console.log("Can not load the server category !!!");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 
 server.get("/admin/add-post", function(req, res){
-    res.redirect("/add-post");
+    if (req.isAuthenticated()){
+        res.redirect("/add-post");
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 
 server.post("/add-post", function(req, res){
-    var post_author = req.body.post_author;
-    var post_title = req.body.post_title;
-    var post_content = req.body.post_content;
-    var post_category = req.body.post_category;
-    var post_tags = req.body.post_tags;
-    var post_comment_count = 0;
-    var post_status = "negative";
-    var post_date = Date.now();
-    postDatabase.create_new_post(post_author, post_title, post_content, post_category, post_tags, post_comment_count, post_status, post_date).then((result) => {
-        res.redirect("/");
-    }).catch((err) => {
-        console.log(err);
-    });
+    if (req.isAuthenticated()){
+        var post_author = req.body.post_author;
+        var post_title = req.body.post_title;
+        var post_content = req.body.post_content;
+        var post_category = req.body.post_category;
+        var post_tags = req.body.post_tags;
+        var post_comment_count = 0;
+        var post_status = "negative";
+        var post_date = Date.now();
+        postDatabase.create_new_post(post_author, post_title, post_content, post_category, post_tags, post_comment_count, post_status, post_date).then((result) => {
+            res.redirect("/");
+        }).catch((err) => {
+            console.log(err);
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 });
 // End of posts
 
+// User
+server.get("/admin/view-users", function(req, res){
+    if (req.isAuthenticated()){
+        console.log("Rendering user main page !!!");
+        userInfoDatabase.get_all_users().then((result) => {
+            if (result != null){
+                res.render("admin/users", {
+                    users: result,
+                });
+            }
+        }).catch((err) => {
+            console.log(err);
+            console.log("Can not find all user !!!");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
+});
+
+server.get("/admin/remove-user", function(req, res){
+    if (req.isAuthenticated()){
+        var userID = url.parse(req.url, true).query.userid;
+        userInfoDatabase.remove_user(userID, () => {
+            res.redirect("/admin/view-users");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
+});
+
+server.post("/admin/add-new-admin", function(req, res){
+    if (req.isAuthenticated()){
+        console.log("Gain access to administrator account !!!");
+        res.render("admin/index");
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
 
 
+    console.log("Creating new administrator !!!");
 
-
-
-
-
-
-
-
+});
+// End of user
 
 // 404 Error Page
-// server.get("/404/404-pagenotfound", function(req, res){
-//     res.render("404/404");
-// });
+server.get("/404/404-pagenotfound", function(req, res){
+    res.render("404/404");
+});
 
-// server.get("*", function(req, res){
-//     res.redirect("/404/404-pagenotfound");
-// });
+server.get("*", function(req, res){
+    res.redirect("/404/404-pagenotfound");
+});
 // End of 404 page
 
 server.listen(process.env.PORT || 3000, function(req, res){

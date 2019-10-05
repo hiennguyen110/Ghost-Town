@@ -1,0 +1,45 @@
+<div class="main-content">
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                    <div class="col-lg-9">
+                        <h2 class="title-1 m-b-25">GhostTown Users</h2>
+                        <div class="table-responsive table--no-card m-b-40">
+                            <table class="table table-borderless table-striped table-earning">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th class="text-right">First Name</th>
+                                        <th class="text-right">Last Name</th>
+                                        <th class="text-right">Email Address</th>
+                                        <th class="text-right">Role Of User</th>
+                                        <th class="text-right">Remove User</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for (var counter = 0; counter < users.length; ++counter) { %>
+                                    <tr>
+                                        <td><%= users[counter].username %></td>
+                                        <td><%= users[counter].firstName %></td>
+                                        <td><%= users[counter].lastName %></td>
+                                        <td><%= users[counter].userEmail %></td>
+                                        <td><%= users[counter].userRole %></td>                                   
+                                        <td class="text-right">
+                                            <a href="/admin/remove-user?userid=<%= users[counter]._id %>">Remove User</a>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> 
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="copyright">
+                            <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div> 
+        </div>
+    </div> 

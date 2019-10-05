@@ -22,13 +22,25 @@ const insert_user_info = function(username, firstName, lastName, userEmail, user
         userRole: userRole
     }); 
     return new_user.save();
-}
+};
 
 const find_user = function(username){
     return USER_ACCOUNT_INFO.findOne({username: username});
+};
+
+const get_all_users = function(){
+    return USER_ACCOUNT_INFO.find({});
+};
+
+const remove_user = function(userID, callback){
+    return USER_ACCOUNT_INFO.deleteOne({
+        _id: userID,
+    }, callback);
 }
 
 module.exports = {
     insert_user_info: insert_user_info,
-    find_user: find_user
+    find_user: find_user,
+    get_all_users: get_all_users,
+    remove_user: remove_user,
 }
