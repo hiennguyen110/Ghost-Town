@@ -3,7 +3,7 @@ const dotenv = require("dotenv").config({
     path: "../.env"
 });
 
-mongoose.connect(process.env.CATEGORY_ADDR, {useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.DATABASE_ADDR, {useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set("useCreateIndex", true);
 const CATEGORY_SCHEMA = new mongoose.Schema({
     category_name: String,

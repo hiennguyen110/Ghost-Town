@@ -26,7 +26,7 @@ server.use(session({
 server.use(passport.initialize());
 server.use(passport.session());
 
-mongoose.connect(process.env.DATABASE_API, {useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.DATABASE_ADDR, {useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set("useCreateIndex", true);
 const USER_ACCOUNT_LOGIN_SCHEMA = new mongoose.Schema({
     username: String,
@@ -289,39 +289,78 @@ server.post("/admin/add-category", function(req, res){
 });
 // End of categories
 
-
-
-
-
-
-
-
-
 // Posts
 server.get("/admin/show-all-posts", function(req, res){
     console.log("Rendering post main page !!!");
-
-});
-
-server.post("/admin/show-all-posts", function(req, res){
-
+    postDatabase.get_all_posts().then((result) => {        
+        if (result != null){
+            res.render("admin/posts", {
+                post: result,
+            });
+        }
+    }).catch((err) => {
+        console.log(err);
+        console.log("Can not get all posts !!!");
+    });
 });
 
 server.get("/admin/approve-post", function(req, res){
     var postID = url.parse(req.url, true).query.postid;
     console.log("Approving post contain id: " + postID);
+    postDatabase.approve_post(postID, () => {
+        console.log("Post has been approved !!!");
+        res.redirect("/admin/show-all-posts");
+    });
 });
 
 server.get("/admin/disapprove-post", function(req, res){
-
+    var postID = url.parse(req.url, true).query.postid;
+    console.log("Disapproving post contain id: " + postID);
+    postDatabase.disapprove_post(postID, () => {
+        console.log("Post has been disapproved !!!");
+        res.redirect("/admin/show-all-posts");
+    });
 });
 
 server.get("/admin/delete-post", function(req, res){
+    var postID = url.parse(req.url, true).query.postid;
+    console.log("Deleting post contain id: " + postID);
+    postDatabase.delete_post_by_id(postID, () => {
+        console.log("Post has been deleted !!!");
+        res.redirect("/admin/show-all-posts");
+    });
+});
 
+// Create new topic
+server.get("/add-post", function(req, res){
+    categoryDatabase.get_all_categories().then((result) => {
+        if (result != null){
+            res.render("page-create-topic", {
+                categories: result
+            });
+        } else {
+            console.log("Empty category database !!!");
+        }
+    }).catch((err) => {
+        console.log(err);
+        console.log("Can not load the server category !!!");
+    });
 });
 
 server.get("/admin/add-post", function(req, res){
+    res.redirect("/add-post");
+});
 
+server.post("/add-post", function(req, res){
+    var post_author = req.body.post_author;
+    var post_title = req.body.post_title;
+    var post_content = req.body.post_content;
+    var post_category = req.body.post_category;
+    var post_tags = req.body.post_tags;
+    var post_comment_count = 0;
+    var post_status = "negative";
+    var post_date = Date.now();
+    create_new_post(post_author, post_title, post_content, post_category, post_tags, post_comment_count, post_status, post_date);
 });
 
 // End of posts
