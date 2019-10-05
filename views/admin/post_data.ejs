@@ -7,22 +7,36 @@
                             <table class="table table-borderless table-striped table-earning">
                                 <thead>
                                     <tr>
-                                        <th>Name of Category</th>
-                                        <th class="text-right">Edit Category</th>
-                                        <th class="text-right">Remove Category</th>
+                                        <th>Post Title</th>
+                                        <th>Post Author</th>
+                                        <th>Post Category</th>
+                                        <th>Post Date</th>
+                                        <th>Status</th>
+                                        <th>Approve Post</th>
+                                        <th>Disapprove Post</th>
+                                        <th>Remove Post</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% for (var counter = 0; counter < categories.length; ++counter) { %>
                                     <tr>
-                                        <td><%= categories[counter].category_name %></td>
+                                        <td><%= post[counter].post_title %></td>
+                                        <td><%= post[counter].post_author %></td>
+                                        <td><%= post[counter].post_category %></td>
+                                        <td><%= post[counter].post_date %></td>
+                                        <td><%= post[counter].post_status%></td>
+
+                                        <td class="text-right">
+                                            <a href="/admin/approve-post?postid=<%= post[counter]._id %>">Approve</a>
+                                        </td>
                                     
                                         <td class="text-right">
-                                            <a href="/admin/edit-cats?catid=<%= categories[counter]._id %>">Edit</a>
+                                            <a href="/admin/disapprove-post?postid=<%= post[counter]._id %>">Disapprove</a>
                                         </td>
 
                                         <td class="text-right">
-                                            <a href="/admin/delete-cats?catid=<%= categories[counter]._id %>">Remove</a>
+                                            <a href="/admin/delete-post?postid=<%= post[counter]._id %>">Remove</a>
                                         </td>
                                     </tr>
                                     <% } %>
@@ -30,52 +44,6 @@
                             </table>
                         </div>
                     </div>
-
-                   
-                    <form action="/admin/add-category" method="POST">
-                        <div class="col-lg-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    Enter new category name at the field below
-                                </div>
-                                <div class="card-body card-block">
-                                    <form action="" method="post" class="form-horizontal">
-                                        <div class="row form-group">
-                                            <div class="col-md-12">
-                                                <input type="text" name="new_category" placeholder="Name of Category" class="form-control">
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm">Create New Category</button>                                    
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-
-                    <form action="/admin/edit-cats" method="POST">
-                        <div class="col-lg-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    Enter the new category name to update
-                                </div>
-                                <div class="card-body card-block">
-                                    <form action="" method="post" class="form-horizontal">
-                                        <div class="row form-group">
-                                            <div class="col-md-12">
-                                                <input type="text" value="<%= new_category_name %>" name="new_category_name" placeholder="Name of Category" class="form-control">
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-danger btn-sm">Update Category</button>                                    
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-             
 
                 <div class="row">
                     <div class="col-md-12">

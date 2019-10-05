@@ -7,6 +7,7 @@ const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const userInfoDatabase = require(__dirname + "/server_functions/user_info.js");
 const categoryDatabase = require(__dirname + "/server_functions/categories.js");
+const postDatabase = require(__dirname + "/server_functions/posts.js");
 const dotenv = require("dotenv").config();
 const path = require("path");
 
@@ -264,17 +265,27 @@ server.post("/admin/edit-cats", function(req, res){
 
 server.get("/admin/delete-cats", function(req, res){
     var catid = url.parse(req.url, true).query.catid;
-    console.log("Trying to delete category with id " + catid);
-    categoryDatabase.delete_category(catid);
-    res.redirect("/admin/view-category"); 
+    categoryDatabase.delete_category(catid).then((result) => {
+        res.redirect("/admin/view-category");
+    }).catch((err) => {
+        console.log(err);
+    })
 });
 
 server.post("/admin/add-category", function(req, res){
     console.log("Adding new category");
     var new_category = req.body.new_category;
-    categoryDatabase.create_new_category(new_category);
-    console.log("New category: " + new_category);
-    res.redirect("/admin/view-category");
+    categoryDatabase.find_category(new_category).then((result) => {
+        if (result == null){
+            categoryDatabase.create_new_category(new_category,() =>{
+                res.redirect("/admin/view-category");
+            });
+        } else {
+            res.send("Duplicated Category !!!");
+        }
+    }).catch((err) => {
+        console.log(err);
+    });
 });
 // End of categories
 
@@ -288,8 +299,29 @@ server.post("/admin/add-category", function(req, res){
 
 // Posts
 server.get("/admin/show-all-posts", function(req, res){
-    console.log("Rendering page ");
-    res.render("admin/posts");
+    console.log("Rendering post main page !!!");
+
+});
+
+server.post("/admin/show-all-posts", function(req, res){
+
+});
+
+server.get("/admin/approve-post", function(req, res){
+    var postID = url.parse(req.url, true).query.postid;
+    console.log("Approving post contain id: " + postID);
+});
+
+server.get("/admin/disapprove-post", function(req, res){
+
+});
+
+server.get("/admin/delete-post", function(req, res){
+
+});
+
+server.get("/admin/add-post", function(req, res){
+
 });
 
 // End of posts
