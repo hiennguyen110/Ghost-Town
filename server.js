@@ -8,6 +8,7 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const userInfoDatabase = require(__dirname + "/server_functions/user_info.js");
 const categoryDatabase = require(__dirname + "/server_functions/categories.js");
 const postDatabase = require(__dirname + "/server_functions/posts.js");
+const worklistDatabase = require(__dirname + "/server_functions/worklist.js");
 const dotenv = require("dotenv").config();
 const path = require("path");
 
@@ -460,21 +461,42 @@ server.get("/admin/remove-user", function(req, res){
         res.redirect("/admin-login");
     }
 });
+// End of user
 
-server.post("/admin/add-new-admin", function(req, res){
+// Working list
+server.get("/admin/view-worklist", function(req, res) {
     if (req.isAuthenticated()){
-        console.log("Gain access to administrator account !!!");
-        res.render("admin/index");
+        var userID = url.parse(req.url, true).query.userid;
+        worklistDatabase.get_all_works(req.user.username).then((result) => {
+            if (result.length != 0){
+                worklistDatabase.remove_work(req.user.username, "Woohoo, nothing is gonna due soon !!!", () => {
+                    var working_list = result[0].working_list;
+                    res.render("admin/worklist", {
+                        worklist: working_list,
+                    });
+                });
+            } else {
+                worklistDatabase.create_new_working_list(req.user.username, "Woohoo, nothing is gonna due soon !!!", () => {
+                    res.redirect("/admin/view-worklist");
+                })
+            }
+        }).catch((err) => {
+            console.log(err);
+        })
     } else {
         console.log("Access denied to administrator account !!!");
         res.redirect("/admin-login");
     }
-
-
-    console.log("Creating new administrator !!!");
-
 });
-// End of user
+
+server.post("/admin/add-work", function(req, res){
+    var new_work = req.body.new_work;
+    worklistDatabase.create_new_working_list(req.user.username, new_work, () => {
+        res.redirect("/admin/view-worklist");
+    });
+   
+});
+// End of worklist
 
 // 404 Error Page
 server.get("/404/404-pagenotfound", function(req, res){
