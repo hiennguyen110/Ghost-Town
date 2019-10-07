@@ -9,6 +9,7 @@ const userInfoDatabase = require(__dirname + "/server_functions/user_info.js");
 const categoryDatabase = require(__dirname + "/server_functions/categories.js");
 const postDatabase = require(__dirname + "/server_functions/posts.js");
 const worklistDatabase = require(__dirname + "/server_functions/worklist.js");
+const commentsDatabase = require(__dirname + "/server_functions/comments.js");
 const dotenv = require("dotenv").config();
 const path = require("path");
 
@@ -497,6 +498,17 @@ server.post("/admin/add-work", function(req, res){
    
 });
 // End of worklist
+
+// Comments
+server.get("/admin/view-comments", function(req, res){
+    if (req.isAuthenticated()){
+        
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/admin-login");
+    }
+});
+// End of comments
 
 // 404 Error Page
 server.get("/404/404-pagenotfound", function(req, res){
