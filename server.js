@@ -43,14 +43,19 @@ passport.serializeUser(USER_ACCOUNT_LOGIN.serializeUser());
 passport.deserializeUser(USER_ACCOUNT_LOGIN.deserializeUser());
 
 // End of passport
-
+var tags_arr = [];
 server.get("/", function(req, res){
     if (req.isAuthenticated()){
         console.log("User is authenticated !!!");
         postDatabase.get_all_posts().then((result) => {
-            res.render("index", {
-                topic: result
+            result.forEach(element => {
+                tags_arr.push(element.post_tags.split(","));
             });
+            res.render("index", {
+                topic: result,
+                tags: tags_arr,
+            });
+            tags_arr = [];
         }).catch((err) => {
             console.log(err);
             console.log("Can not get post data !!!");

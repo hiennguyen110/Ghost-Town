@@ -266,19 +266,18 @@
                         </svg>
                     </div>
                     <div class="tt-col-description">
-                        <h6 class="tt-title"><a href="page-single-topic">
+                        <h6 class="tt-title"><a href="#">
                             <!-- This is the name of the topic -->
                             <%= topic[counter].post_title%>
                         </a></h6>
                         <div class="row align-items-center no-gutters">
                             <div class="col-11">
                                 <ul class="tt-list-badge">
-                                        <li class="show-mobile"><a href="#"><span class="tt-color04 tt-badge"><%= topic[counter].post_category%></span></a></li>
-
+                                    <li class="show-mobile"><a href="#"><span class="tt-color04 tt-badge"><%= topic[counter].post_category%></span></a></li>
                                     <!-- This is the tags of the topic -->
-                                    
-                                        <li><a href="#"><span class="tt-badge"><%= topic[counter].post_tags[counter]%></span></a></li>
-                                    
+                                    <% for (var tags_counter = 0; tags_counter < tags[counter].length; ++tags_counter) { %>
+                                        <li><a href="#"><span class="tt-badge"><%= tags[counter][tags_counter]%></span></a></li>
+                                    <% } %>
                                 </ul>
                             </div>
                             <div class="col-1 ml-auto show-mobile">
@@ -287,7 +286,7 @@
                         </div>
                     </div>
                     <div class="tt-col-category"><span class="tt-color04 tt-badge"><%= topic[counter].post_category%></span></div>
-                    <div class="tt-col-value  hide-mobile"><308></div>
+                    <div class="tt-col-value  hide-mobile">308</div>
                     <div class="tt-col-value tt-color-select  hide-mobile">660</div>
                     <div class="tt-col-value  hide-mobile">8.3k</div>
                     <div class="tt-col-value hide-mobile">1d</div>
