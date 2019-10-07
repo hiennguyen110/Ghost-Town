@@ -47,7 +47,14 @@ passport.deserializeUser(USER_ACCOUNT_LOGIN.deserializeUser());
 server.get("/", function(req, res){
     if (req.isAuthenticated()){
         console.log("User is authenticated !!!");
-        res.render("index");
+        postDatabase.get_all_posts().then((result) => {
+            res.render("index", {
+                topic: result
+            });
+        }).catch((err) => {
+            console.log(err);
+            console.log("Can not get post data !!!");
+        })
     } else {
         console.log("User is not authenticated !!!");
         res.redirect("/page-login");
@@ -502,7 +509,17 @@ server.post("/admin/add-work", function(req, res){
 // Comments
 server.get("/admin/view-comments", function(req, res){
     if (req.isAuthenticated()){
-        
+        commentsDatabase.get_all_comments().then((result) => {
+            console.log(result);
+            if (result != null){
+                res.render("/admin/comments", {
+
+                });
+            }
+        }).catch((err) => {
+            console.log(err);
+            console.log("Can not get comments !!!");
+        })
     } else {
         console.log("Access denied to administrator account !!!");
         res.redirect("/admin-login");
