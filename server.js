@@ -62,7 +62,7 @@ server.get("/", function(req, res){
                 nameSymbol: namePrefix,
             });
             tags_arr = [];
-            nameSymbol = [];
+            namePrefix = [];
             // End of getting comment
         }).catch((err) => {
             console.log(err);
@@ -79,20 +79,21 @@ server.get("/view-topic", function(req, res){
     postDatabase.find_post_by_id(topicID).then((result) => {
         tags_arr.push(result.post_tags.split(","));
         commentsDatabase.get_all_comments(topicID).then((comments) => {
-            console.log(comments);
+            namePrefix.push("#icon-ava-" + result.post_author.charAt(0).toLowerCase());
+            console.log(namePrefix);
             res.render("page-single-topic", {
                 topic: result,
                 tags: tags_arr,
                 comments: comments,
+                nameSymbol: namePrefix,
             });
             tags_arr = [];
+            namePrefix = [];
        }).then((err) => {
            console.log(err);
-           console.log("Can not get the comment data !!!");
        });
     }).catch((err) => {
         console.log(err);
-        console.log("Can not get the post data !!!");
     })
 });
 
