@@ -44,6 +44,7 @@ passport.deserializeUser(USER_ACCOUNT_LOGIN.deserializeUser());
 
 // End of passport
 var tags_arr = [];
+var namePrefix = [];
 server.get("/", function(req, res){
     if (req.isAuthenticated()){
         console.log("User is authenticated !!!");
@@ -51,11 +52,18 @@ server.get("/", function(req, res){
             result.forEach(element => {
                 tags_arr.push(element.post_tags.split(","));
             });
-            res.render("index", {
+            result.forEach(element => {
+                namePrefix.push("#icon-ava-" + element.post_author.charAt(0).toLowerCase());
+            });
+             // This code in here is used to get all the comment related to this post
+             res.render("index", {
                 topic: result,
                 tags: tags_arr,
+                nameSymbol: namePrefix,
             });
             tags_arr = [];
+            nameSymbol = [];
+            // End of getting comment
         }).catch((err) => {
             console.log(err);
             console.log("Can not get post data !!!");
@@ -66,8 +74,26 @@ server.get("/", function(req, res){
     }
 });
 
-server.post("/", function(req, res){
-    res.render("index");
+server.get("/view-topic", function(req, res){
+    var topicID = url.parse(req.url, true).query.topicID;
+    postDatabase.find_post_by_id(topicID).then((result) => {
+        tags_arr.push(result.post_tags.split(","));
+        commentsDatabase.get_all_comments(topicID).then((comments) => {
+            console.log(comments);
+            res.render("page-single-topic", {
+                topic: result,
+                tags: tags_arr,
+                comments: comments,
+            });
+            tags_arr = [];
+       }).then((err) => {
+           console.log(err);
+           console.log("Can not get the comment data !!!");
+       });
+    }).catch((err) => {
+        console.log(err);
+        console.log("Can not get the post data !!!");
+    })
 });
 
 server.get("/page-signup", function(req, res){
@@ -529,6 +555,24 @@ server.get("/admin/view-comments", function(req, res){
         console.log("Access denied to administrator account !!!");
         res.redirect("/admin-login");
     }
+});
+
+server.post("/add-reply-to-topic", function(req, res){
+    if (req.isAuthenticated()){
+        var comment_content = req.body.comment_content;
+        var topicid = url.parse(req.url, true).query.topicid;
+        commentsDatabase.create_comment(topicid, req.user.username, comment_content, () => {
+            console.log("New comment has been added !!!");
+            res.redirect("/");
+        });
+    } else {
+        console.log("Access denied to administrator account !!!");
+        res.redirect("/");
+    }
+});
+
+server.get("/admin/add-comment", function(req, res){
+
 });
 // End of comments
 

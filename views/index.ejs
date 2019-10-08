@@ -262,11 +262,11 @@
                 <div class="tt-item">
                     <div class="tt-col-avatar">
                         <svg class="tt-icon">
-                            <use xlink:href="#icon-ava-c"></use>
+                            <use xlink:href="<%=nameSymbol[counter]%>"></use>
                         </svg>
                     </div>
                     <div class="tt-col-description">
-                        <h6 class="tt-title"><a href="#">
+                        <h6 class="tt-title"><a href="/view-topic?topicID=<%= topic[counter]._id%>">
                             <!-- This is the name of the topic -->
                             <%= topic[counter].post_title%>
                         </a></h6>
