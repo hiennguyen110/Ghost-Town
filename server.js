@@ -45,24 +45,34 @@ passport.deserializeUser(USER_ACCOUNT_LOGIN.deserializeUser());
 // End of passport
 var tags_arr = [];
 var namePrefix = [];
+var topic = [];
+var userSymbol = [];
 server.get("/", function(req, res){
     if (req.isAuthenticated()){
         console.log("User is authenticated !!!");
         postDatabase.get_all_posts().then((result) => {
+            topic = result.reverse();
             result.forEach(element => {
                 tags_arr.push(element.post_tags.split(","));
             });
             result.forEach(element => {
                 namePrefix.push("#icon-ava-" + element.post_author.charAt(0).toLowerCase());
             });
-             // This code in here is used to get all the comment related to this post
-             res.render("index", {
-                topic: result,
-                tags: tags_arr,
-                nameSymbol: namePrefix,
+            userInfoDatabase.find_user(req.user.username).then((user) => {
+                userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
+                res.render("index", {
+                    topic: result,
+                    tags: tags_arr,
+                    nameSymbol: namePrefix,
+                    user_id: user,
+                    userSymbol: userSymbol,
+                });
+                tags_arr = [];
+                namePrefix = [];
+                userSymbol = [];
+            }).catch((err) => {
+                console.log(err);
             });
-            tags_arr = [];
-            namePrefix = [];
             // End of getting comment
         }).catch((err) => {
             console.log(err);
@@ -74,27 +84,46 @@ server.get("/", function(req, res){
     }
 });
 
+var comment_prefix = [];
 server.get("/view-topic", function(req, res){
-    var topicID = url.parse(req.url, true).query.topicID;
-    postDatabase.find_post_by_id(topicID).then((result) => {
-        tags_arr.push(result.post_tags.split(","));
-        commentsDatabase.get_all_comments(topicID).then((comments) => {
-            namePrefix.push("#icon-ava-" + result.post_author.charAt(0).toLowerCase());
-            console.log(namePrefix);
-            res.render("page-single-topic", {
-                topic: result,
-                tags: tags_arr,
-                comments: comments,
-                nameSymbol: namePrefix,
-            });
-            tags_arr = [];
-            namePrefix = [];
-       }).then((err) => {
-           console.log(err);
-       });
-    }).catch((err) => {
-        console.log(err);
-    })
+    if (req.isAuthenticated()){
+        var topicID = url.parse(req.url, true).query.topicID;
+        postDatabase.find_post_by_id(topicID).then((result) => {
+            tags_arr.push(result.post_tags.split(","));
+            // This code in here is used to get all the comment related to this post
+            commentsDatabase.get_all_comments(topicID).then((comments) => {
+                userInfoDatabase.find_user(req.user.username).then((user) => {
+                    comments = comments.reverse();
+                    comments.forEach(element => {
+                        comment_prefix.push("#icon-ava-" + element.comment_author.charAt(0).toLowerCase());
+                    });
+                    namePrefix.push("#icon-ava-" + result.post_author.charAt(0).toLowerCase());
+                    userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
+                    res.render("page-single-topic", {
+                        topic: result,
+                        tags: tags_arr,
+                        comments: comments,
+                        nameSymbol: namePrefix,
+                        commentSymbol: comment_prefix,
+                        userSymbol: userSymbol,
+                        user_id: user,
+                    });
+                    tags_arr = [];
+                    namePrefix = [];
+                    comment_prefix = [];
+                    userSymbol = [];
+                }).catch((err) => {
+                    console.log(err);
+                });
+           }).catch((err) => {
+               console.log(err);
+           });
+        }).catch((err) => {
+            console.log(err);
+        });   
+    } else {
+        res.redirect("/");
+    }
 });
 
 server.get("/page-signup", function(req, res){
@@ -471,6 +500,41 @@ server.post("/add-post", function(req, res){
 // End of posts
 
 // User
+var profileid = "";
+server.get("/user-peofile", function(req, res){
+    if (req.isAuthenticated()){
+        profileid = url.parse(req.url, true).query.profileid;
+        console.log(profileid);
+        userInfoDatabase.get_user_info(profileid).then((result) => {
+            res.render("user-profile", {
+                user_data: result,
+            });
+        }).catch((err) => {
+            console.log(err);
+            console.log("Can not get client information !!!");
+        })
+    } else {
+        console.log("Access denied to client account");
+        res.redirect("/");
+    }
+});
+
+server.post("/user-profile", function(req, res){
+    if (req.isAuthenticated()){
+        var firstName = req.body.firstName;
+        var lastName = req.body.lastName;
+        var userEmail = req.body.userEmail;
+        userInfoDatabase.update_user(profileid, firstName, lastName, userEmail).then((result) => {
+            res.redirect("/");
+        }).catch((err) => {
+            console.log(err);
+        });
+    } else {
+        console.log("Access denied to client account");
+        res.redirect("/");
+    }
+});
+
 server.get("/admin/view-users", function(req, res){
     if (req.isAuthenticated()){
         console.log("Rendering user main page !!!");

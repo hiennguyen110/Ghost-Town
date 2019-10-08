@@ -36,11 +36,25 @@ const remove_user = function(userID, callback){
     return USER_ACCOUNT_INFO.deleteOne({
         _id: userID,
     }, callback);
-}
+};
+
+const get_user_info = function(userID){
+    return USER_ACCOUNT_INFO.findOne({_id: userID});
+};
+
+const update_user = function(userid, firstName, lastName, userEmail){
+    return USER_ACCOUNT_INFO.findOneAndUpdate({_id: userid}, {
+        firstName: firstName,
+        lastName: lastName,
+        userEmail: userEmail,
+    });
+};
 
 module.exports = {
     insert_user_info: insert_user_info,
     find_user: find_user,
     get_all_users: get_all_users,
     remove_user: remove_user,
+    get_user_info: get_user_info,
+    update_user: update_user,
 }
