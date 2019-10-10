@@ -129,7 +129,19 @@ server.get("/view-topic", function(req, res){
 });
 
 server.get("/view-categories", function(req, res){
-  res.render("page-categories");
+  if (req.isAuthenticated()){
+      categoryDatabase.get_all_categories().then((result) => {
+        res.render("page-categories", {
+          categories: result,
+        });
+      }).catch((err) => {
+        console.log(err);
+        console.log("Can not get the category to the client !!!");
+      });
+  } else {
+      console.log("User is not authenticated !!!");
+      res.redirect("/page-login");
+  }
 });
 
 server.get("/page-signup", function(req, res){
@@ -366,10 +378,12 @@ server.post("/admin/add-category", function(req, res){
     if (req.isAuthenticated()){
         console.log("Adding new category");
         var new_category = req.body.new_category;
+        var cat_description = req.body.cat_description;
         categoryDatabase.find_category(new_category).then((result) => {
             if (result == null){
-                categoryDatabase.create_new_category(new_category,() =>{
-                    res.redirect("/admin/view-category");
+                categoryDatabase.insert_new_category(new_category, cat_description, () => {
+                  console.log("Adding catergory");
+                  res.redirect("/admin/view-category");
                 });
             } else {
                 res.send("Duplicated Category !!!");
@@ -752,6 +766,19 @@ server.post("/admin/change-profile", function(req, res){
 });
 
 // End of admin profile
+
+// GhostTown News
+server.get("/admin/gt-news", function(req, res){
+  if (req.isAuthenticated()){
+    res.render("admin/gt_news", {
+
+    });
+  } else {
+    console.log("Access denied to administrator account !!!");
+    res.redirect("/admin-login");
+  }
+});
+// End of GhostTown News
 
 // 404 Error Page
 server.get("/404/404-pagenotfound", function(req, res){

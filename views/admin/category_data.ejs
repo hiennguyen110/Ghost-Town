@@ -16,7 +16,7 @@
                                     <% for (var counter = 0; counter < categories.length; ++counter) { %>
                                     <tr>
                                         <td><%= categories[counter].category_name %></td>
-                                    
+
                                         <td class="text-right">
                                             <a href="/admin/edit-cats?catid=<%= categories[counter]._id %>">Edit</a>
                                         </td>
@@ -31,7 +31,7 @@
                         </div>
                     </div>
 
-                   
+
                     <form action="/admin/add-category" method="POST">
                         <div class="col-lg-6">
                             <div class="card">
@@ -39,16 +39,24 @@
                                     Enter new category name at the field below
                                 </div>
                                 <div class="card-body card-block">
-                                    <form action="" method="post" class="form-horizontal">
-                                        <div class="row form-group">
-                                            <div class="col-md-12">
-                                                <input type="text" name="new_category" placeholder="Name of Category" class="form-control">
-                                            </div>
-                                        </div>
-                                    </form>
+                                  <div class="row form-group">
+                                      <div class="col-md-12">
+                                          <input type="text" name="new_category" placeholder="Name of Category" class="form-control">
+                                      </div>
+                                  </div>
+                                  <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <input type="text" name="cat_description" placeholder="Category Description" class="form-control">
+                                    </div>
+                                  </div>
                                 </div>
+
+                                <!-- <div class="card-header">
+                                    Enter new category description at the field below
+                                </div> -->
+
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary btn-sm">Create New Category</button>                                    
+                                    <button type="submit" class="btn btn-primary btn-sm">Create New Category</button>
                                 </div>
                             </div>
                         </div>
@@ -70,12 +78,12 @@
                                     </form>
                                 </div>
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-danger btn-sm">Update Category</button>                                    
+                                    <button type="submit" class="btn btn-danger btn-sm">Update Category</button>
                                 </div>
                             </div>
                         </div>
                     </form>
-             
+
 
                 <div class="row">
                     <div class="col-md-12">
@@ -85,6 +93,6 @@
                     </div>
                 </div>
 
-            </div> 
+            </div>
         </div>
-    </div> 
+    </div>
