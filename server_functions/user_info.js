@@ -6,7 +6,7 @@ mongoose.set("useCreateIndex", true);
 const USER_ACCOUNT_INFO_SCHEMA = new mongoose.Schema({
     username: String,
     firstName: String,
-    lastName: String, 
+    lastName: String,
     userEmail: String,
     userRole: String
 });
@@ -18,9 +18,9 @@ const insert_user_info = function(username, firstName, lastName, userEmail, user
         username: username,
         firstName: firstName,
         lastName: lastName,
-        userEmail: userEmail, 
+        userEmail: userEmail,
         userRole: userRole
-    }); 
+    });
     return new_user.save();
 };
 
@@ -50,6 +50,21 @@ const update_user = function(userid, firstName, lastName, userEmail){
     });
 };
 
+const get_admin_user = function(username) {
+  return USER_ACCOUNT_INFO.findOne({
+    username: username,
+    userRole: "admin",
+  });
+};
+
+const update_admin = function(username, firstName, lastName, userEmail){
+  return USER_ACCOUNT_INFO.findOneAndUpdate({username: username}, {
+    firstName: firstName,
+    lastName: lastName,
+    userEmail: userEmail,
+  });
+};
+
 module.exports = {
     insert_user_info: insert_user_info,
     find_user: find_user,
@@ -57,4 +72,6 @@ module.exports = {
     remove_user: remove_user,
     get_user_info: get_user_info,
     update_user: update_user,
+    get_admin_user: get_admin_user,
+    update_admin: update_admin,
 }

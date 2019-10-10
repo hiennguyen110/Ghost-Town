@@ -120,7 +120,7 @@ server.get("/view-topic", function(req, res){
            });
         }).catch((err) => {
             console.log(err);
-        });   
+        });
     } else {
         res.redirect("/");
     }
@@ -138,7 +138,7 @@ server.post("/page-signup", function(req, res){
                 console.log("Username is already taken !!!");
                 res.redirect("/page-signup");
             } else {
-                res.redirect("/page-signup");      
+                res.redirect("/page-signup");
             }
         } else {
             var username = req.body.username;
@@ -194,12 +194,6 @@ server.get("/page-logout", function(req, res){
     res.redirect("/");
 });
 
-
-
-
-
-
-
 // Admin field
 server.get("/admin", function(req, res){
     if (req.isAuthenticated()){
@@ -223,7 +217,7 @@ server.post("/admin-signup", function(req, res){
                 console.log("Username is already taken !!!");
                 res.redirect("/page-signup");
             } else {
-                res.redirect("/page-signup");      
+                res.redirect("/page-signup");
             }
         } else {
             var username = req.body.username;
@@ -388,7 +382,7 @@ server.post("/admin/add-category", function(req, res){
 server.get("/admin/show-all-posts", function(req, res){
     if (req.isAuthenticated()){
         console.log("Rendering post main page !!!");
-        postDatabase.get_all_posts().then((result) => {        
+        postDatabase.get_all_posts().then((result) => {
             if (result != null){
                 res.render("admin/posts", {
                     post: result,
@@ -598,28 +592,109 @@ server.post("/admin/add-work", function(req, res){
     worklistDatabase.create_new_working_list(req.user.username, new_work, () => {
         res.redirect("/admin/view-worklist");
     });
-   
+
 });
 // End of worklist
 
 // Comments
+post_link = [];
 server.get("/admin/view-comments", function(req, res){
     if (req.isAuthenticated()){
-        commentsDatabase.get_all_comments().then((result) => {
-            console.log(result);
-            if (result != null){
-                res.render("/admin/comments", {
-
-                });
-            }
+        commentsDatabase.get_comments().then((result) => {
+          result.forEach(element => {
+            post_link.push(element.post_id);
+          });
+          res.render("admin/comments", {
+            comments: result,
+            post_link: post_link,
+          });
+          post_link = [];
         }).catch((err) => {
-            console.log(err);
-            console.log("Can not get comments !!!");
+          console.log(err);
+          console.log("Can not get comments for administrator");
         })
     } else {
         console.log("Access denied to administrator account !!!");
         res.redirect("/admin-login");
     }
+});
+
+server.get("/admin/approve-comment", function(req, res){
+  if (req.isAuthenticated()){
+      var commentId = url.parse(req.url, true).query.commentid;
+      commentsDatabase.approve_comment(commentId, () => {
+        res.redirect("/admin/view-comments");
+      });
+  } else {
+      console.log("Access denied to administrator account !!!");
+      res.redirect("/admin-login");
+  }
+});
+
+server.get("/admin/disapprove-comment", function(req, res){
+  if (req.isAuthenticated()){
+      var commentId = url.parse(req.url, true).query.commentid;
+      commentsDatabase.disapprove_comment(commentId, () => {
+        res.redirect("/admin/view-comments");
+      });
+  } else {
+      console.log("Access denied to administrator account !!!");
+      res.redirect("/admin-login");
+  }
+});
+
+server.get("/admin/delete-comment", function(req, res){
+  if (req.isAuthenticated()){
+      var commentId = url.parse(req.url, true).query.commentid;
+      commentsDatabase.remove_comment(commentId, () => {
+        res.redirect("/admin/view-comments");
+      });
+  } else {
+      console.log("Access denied to administrator account !!!");
+      res.redirect("/admin-login");
+  }
+});
+
+server.get("/gotopost", function(req, res){
+  if (req.isAuthenticated()){
+      var topicID = url.parse(req.url, true).query.postid;
+      postDatabase.find_post_by_id(topicID).then((result) => {
+          tags_arr.push(result.post_tags.split(","));
+          // This code in here is used to get all the comment related to this post
+          commentsDatabase.get_all_comments(topicID).then((comments) => {
+              userInfoDatabase.find_user(req.user.username).then((user) => {
+                  comments = comments.reverse();
+                  comments.forEach(element => {
+                      comment_prefix.push("#icon-ava-" + element.comment_author.charAt(0).toLowerCase());
+                  });
+                  namePrefix.push("#icon-ava-" + result.post_author.charAt(0).toLowerCase());
+                  userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
+                  res.render("page-single-topic", {
+                      topic: result,
+                      tags: tags_arr,
+                      comments: comments,
+                      nameSymbol: namePrefix,
+                      commentSymbol: comment_prefix,
+                      userSymbol: userSymbol,
+                      user_id: user,
+                  });
+                  tags_arr = [];
+                  namePrefix = [];
+                  comment_prefix = [];
+                  userSymbol = [];
+              }).catch((err) => {
+                  console.log(err);
+              });
+         }).catch((err) => {
+             console.log(err);
+         });
+      }).catch((err) => {
+          console.log(err);
+      });
+  } else {
+      console.log("Access denied to administrator account !!!");
+      res.redirect("/admin-login");
+  }
 });
 
 server.post("/add-reply-to-topic", function(req, res){
@@ -635,11 +710,42 @@ server.post("/add-reply-to-topic", function(req, res){
         res.redirect("/");
     }
 });
-
-server.get("/admin/add-comment", function(req, res){
-
-});
 // End of comments
+
+// Admin profile
+server.get("/admin/view-profile", function(req, res){
+  if (req.isAuthenticated()){
+      var admin_username = req.user.username;
+      userInfoDatabase.get_admin_user(admin_username).then((result) => {
+        res.render("admin/profile", {
+          admin_data: result,
+        })
+      }).catch((err) => {
+        console.log(err);
+      })
+  } else {
+      console.log("Access denied to administrator account !!!");
+      res.redirect("/admin-login");
+  }
+});
+
+server.post("/admin/change-profile", function(req, res){
+  if (req.isAuthenticated()){
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var userEmail = req.body.userEmail;
+    userInfoDatabase.update_admin(req.user.username, firstName, lastName, userEmail).then((result) => {
+        res.redirect("/admin/view-profile");
+    }).catch((err) => {
+        console.log(err);
+    });
+  } else {
+      console.log("Access denied to administrator account !!!");
+      res.redirect("/admin-login");
+  }
+});
+
+// End of admin profile
 
 // 404 Error Page
 server.get("/404/404-pagenotfound", function(req, res){

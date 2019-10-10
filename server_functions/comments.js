@@ -19,16 +19,41 @@ const get_all_comments = function(post_id) {
     return USER_COMMENTS.find({post_id: post_id});
 };
 
-const create_comment = function(post_id, comment_author, comment_content, callback){
+const create_comment = function(post_id, comment_author, comment_content, comment_date, callback){
     USER_COMMENTS.insertMany([{
         post_id: post_id,
         comment_author: comment_author,
         comment_content: comment_content,
         comment_date: Date.now(),
+        comment_status: "positive",
     }], callback);
+};
+
+const get_comments = function() {
+  return USER_COMMENTS.find({});
+};
+
+const approve_comment = function(commentId, callback){
+  return USER_COMMENTS.updateOne({_id: commentId}, {
+    comment_status: "positive",
+  }, callback);
+};
+
+const disapprove_comment = function(commentId, callback){
+  return USER_COMMENTS.updateOne({_id: commentId}, {
+    comment_status: "negative",
+  }, callback);
+};
+
+const remove_comment = function(commentId, callback){
+  return USER_COMMENTS.deleteOne({_id: commentId}, callback);
 };
 
 module.exports = {
     get_all_comments: get_all_comments,
     create_comment: create_comment,
+    get_comments: get_comments,
+    approve_comment: approve_comment,
+    disapprove_comment: disapprove_comment,
+    remove_comment: remove_comment,
 };

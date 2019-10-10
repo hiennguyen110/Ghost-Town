@@ -61,33 +61,12 @@
                     </div>
                 </div>
             </div>
-            <div class="tt-item">
-                <div class="tt-info-box">
-                    <h6 class="tt-title">Thread Status</h6>
-                    <div class="tt-row-icon">
-                        <div class="tt-item">
-                            <a href="#" class="tt-icon-btn tt-position-bottom">
-                                <i class="tt-icon"><svg><use xlink:href="#icon-view"></use></svg></i>
-                                <span class="tt-text">10.5k</span>
-                            </a>
-                        </div>
-                        <div class="tt-item">
-                            <a href="#" class="tt-icon-btn tt-position-bottom">
-                                <i class="tt-icon"><svg><use xlink:href="#icon-user"></use></svg></i>
-                                <span class="tt-text">168</span>
-                            </a>
-                        </div>
-                        <div class="tt-item">
-                            <a href="#" class="tt-icon-btn tt-position-bottom">
-                                <i class="tt-icon"><svg><use xlink:href="#icon-like"></use></svg></i>
-                                <span class="tt-text">2.4k</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+
+            <div class="tt-wrapper-inner">
+                <h4 class="tt-title-separator"><span>This is the comments section</span></h4>
             </div>
 
-            <% for (var comment_counter = 0; comment_counter < comments.length; ++comment_counter) { %>                
+            <% for (var comment_counter = 0; comment_counter < comments.length; ++comment_counter) { %>
                 <div class="tt-item tt-wrapper-success">
                         <div class="tt-single-topic">
                             <div class="tt-item-header pt-noborder">
@@ -105,7 +84,7 @@
                                    </a>
                                </div>
                            </div>
-    
+
                            <div class="tt-item-description">
                                 <h6 class="tt-title"><%=comments[comment_counter].comment_content%></h6>
                             </div>
@@ -135,7 +114,7 @@
                                </a>
                            </div>
                        </div>
-                   </div>                
+                   </div>
             <% } %>
 
         </div>
@@ -160,7 +139,7 @@
             <div class="tt-wrapper-inner">
                 <div class="pt-editor form-default">
                     <h6 class="pt-title">Post Your Reply</h6>
-                    
+
                     <div class="form-group">
                         <textarea name="comment_content" class="form-control" rows="5" placeholder="Lets get started"></textarea>
                     </div>
