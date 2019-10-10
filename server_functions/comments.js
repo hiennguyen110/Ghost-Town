@@ -1,3 +1,5 @@
+//jshint esversion:6
+
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config({
     path: "../.env"
@@ -16,7 +18,7 @@ const COMMENTS_SCHEMA = new mongoose.Schema({
 const USER_COMMENTS = mongoose.model("COMMENTS", COMMENTS_SCHEMA);
 
 const get_all_comments = function(post_id) {
-    return USER_COMMENTS.find({post_id: post_id});
+    return USER_COMMENTS.find({post_id: post_id, comment_status: "positive"});
 };
 
 const create_comment = function(post_id, comment_author, comment_content, comment_date, callback){

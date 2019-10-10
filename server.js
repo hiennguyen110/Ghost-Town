@@ -1,3 +1,5 @@
+//jshint esversion:6
+
 const express = require("express");
 const url = require("url");
 const bodyParser = require("body-parser");
@@ -77,7 +79,7 @@ server.get("/", function(req, res){
         }).catch((err) => {
             console.log(err);
             console.log("Can not get post data !!!");
-        })
+        });
     } else {
         console.log("User is not authenticated !!!");
         res.redirect("/page-login");
@@ -126,6 +128,10 @@ server.get("/view-topic", function(req, res){
     }
 });
 
+server.get("/view-categories", function(req, res){
+  res.render("page-categories");
+});
+
 server.get("/page-signup", function(req, res){
     res.render("page-signup");
 });
@@ -157,7 +163,7 @@ server.post("/page-signup", function(req, res){
                 res.redirect("/page-signup");
             });
         }
-    })
+    });
 });
 
 server.get("/page-login", function(req, res){
@@ -236,7 +242,7 @@ server.post("/admin-signup", function(req, res){
                 res.redirect("/admin-signup");
             });
         }
-    })
+    });
 });
 
 server.get("/admin-login", function(req, res){
@@ -270,7 +276,7 @@ server.post("/admin-login", function(req, res){
         }
     }).catch((err) => {
         console.log(err);
-    })
+    });
 });
 
 server.get("/bad-admin-credential", function(req, res){
@@ -506,7 +512,7 @@ server.get("/user-peofile", function(req, res){
         }).catch((err) => {
             console.log(err);
             console.log("Can not get client information !!!");
-        })
+        });
     } else {
         console.log("Access denied to client account");
         res.redirect("/");
@@ -576,11 +582,11 @@ server.get("/admin/view-worklist", function(req, res) {
             } else {
                 worklistDatabase.create_new_working_list(req.user.username, "Woohoo, nothing is gonna due soon !!!", () => {
                     res.redirect("/admin/view-worklist");
-                })
+                });
             }
         }).catch((err) => {
             console.log(err);
-        })
+        });
     } else {
         console.log("Access denied to administrator account !!!");
         res.redirect("/admin-login");
@@ -612,7 +618,7 @@ server.get("/admin/view-comments", function(req, res){
         }).catch((err) => {
           console.log(err);
           console.log("Can not get comments for administrator");
-        })
+        });
     } else {
         console.log("Access denied to administrator account !!!");
         res.redirect("/admin-login");
@@ -719,10 +725,10 @@ server.get("/admin/view-profile", function(req, res){
       userInfoDatabase.get_admin_user(admin_username).then((result) => {
         res.render("admin/profile", {
           admin_data: result,
-        })
+        });
       }).catch((err) => {
         console.log(err);
-      })
+      });
   } else {
       console.log("Access denied to administrator account !!!");
       res.redirect("/admin-login");
