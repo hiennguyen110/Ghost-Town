@@ -61,6 +61,7 @@ server.get("/", function(req, res){
                 namePrefix.push("#icon-ava-" + element.post_author.charAt(0).toLowerCase());
             });
             userInfoDatabase.find_user(req.user.username).then((user) => {
+              console.log(user);
                 userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
                 res.render("index", {
                     topic: result,
@@ -131,17 +132,24 @@ server.get("/view-topic", function(req, res){
 
 server.get("/view-categories", function(req, res){
   if (req.isAuthenticated()){
-      categoryDatabase.get_all_categories().then((result) => {
+    userInfoDatabase.find_user(req.user.username).then((user) => {
+      categoryDatabase.get_all_categories().then((categories) => {
+        userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
         res.render("page-categories", {
-          categories: result,
+          user_id: user,
+          userSymbol: userSymbol,
+          categories: categories,
         });
       }).catch((err) => {
         console.log(err);
-        console.log("Can not get the category to the client !!!");
       });
+    }).catch((err) => {
+      console.log(err);
+    });
+    userSymbol = [];
   } else {
-      console.log("User is not authenticated !!!");
-      res.redirect("/page-login");
+      console.log("Access denied to administrator account !!!");
+      res.redirect("/");
   }
 });
 
@@ -464,22 +472,24 @@ server.get("/admin/delete-post", function(req, res){
 // Create new topic
 server.get("/add-post", function(req, res){
     if (req.isAuthenticated()){
-        categoryDatabase.get_all_categories().then((result) => {
-            console.log(result);
-            if (result != null){
-                res.render("page-create-topic", {
-                    categories: result
-                });
-            } else {
-                console.log("Empty category database !!!");
-            }
+      userInfoDatabase.find_user(req.user.username).then((user) => {
+        categoryDatabase.get_all_categories().then((categories) => {
+          userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
+          res.render("page-create-topic", {
+            user_id: user,
+            userSymbol: userSymbol,
+            categories: categories,
+          });
         }).catch((err) => {
-            console.log(err);
-            console.log("Can not load the server category !!!");
+          console.log(err);
         });
+      }).catch((err) => {
+        console.log(err);
+      });
+      userSymbol = [];
     } else {
         console.log("Access denied to administrator account !!!");
-        res.redirect("/admin-login");
+        res.redirect("/");
     }
 });
 
@@ -494,7 +504,7 @@ server.get("/admin/add-post", function(req, res){
 
 server.post("/add-post", function(req, res){
     if (req.isAuthenticated()){
-        var post_author = req.body.post_author;
+        var post_author = req.user.username;
         var post_title = req.body.post_title;
         var post_content = req.body.post_content;
         var post_category = req.body.post_category;
