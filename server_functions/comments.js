@@ -21,7 +21,7 @@ const get_all_comments = function(post_id) {
     return USER_COMMENTS.find({post_id: post_id, comment_status: "positive"});
 };
 
-const create_comment = function(post_id, comment_author, comment_content, comment_date, callback){
+const create_comment = function(post_id, comment_author, comment_content, callback){
     USER_COMMENTS.insertMany([{
         post_id: post_id,
         comment_author: comment_author,

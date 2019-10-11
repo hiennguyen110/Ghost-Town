@@ -1,3 +1,5 @@
+//jshint esversion:6
+
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config({
     path: "../.env"
@@ -13,7 +15,9 @@ const USER_POST_SCHEMA = new mongoose.Schema({
     post_tags: String,
     post_comment_count: Number,
     post_status: String,
-    post_date: Date
+    post_date: Date,
+    post_like: Number,
+    post_view: Number,
 });
 
 const USER_POST = mongoose.model("POSTS", USER_POST_SCHEMA);
@@ -27,11 +31,50 @@ const create_new_post = function(post_author, post_title, post_content, post_cat
         post_tags: post_tags,
         post_comment_count: post_comment_count,
         post_status: post_status,
-        post_date: post_date
-    }); 
+        post_date: post_date,
+        post_like: 0,
+        post_view: 0,
+    });
     console.log("post created !!!");
     return new_post.save();
-}
+};
+
+const update_like_number = function(postid){
+  find_post_by_id(postid).then((result) => {
+    var likeNumber = result.post_like;
+    likeNumber = likeNumber + 1;
+    return USER_POST.updateOne({_id: postid}, {
+      post_like: likeNumber,
+    });
+  }).catch((err) => {
+    console.log(err);
+  });
+};
+
+const update_view_number = function(postid){
+  find_post_by_id(postid).then((result) => {
+    var viewNumber = result.post_view;
+    viewNumber = viewNumber + 1;
+    console.log("updating view number !!!");
+    return USER_POST.updateOne({_id: postid}, {
+      post_view: viewNumber,
+    });
+  }).catch((err) => {
+    console.log(err);
+  });
+};
+
+const update_comment_number = function(postid){
+  find_post_by_id(postid).then((result) => {
+    var commentNumber = result.post_comment_count;
+    commentNumber = commentNumber + 1;
+    return USER_POST.updateOne({_id: postid}, {
+      post_comment_count: commentNumber,
+    });
+  }).catch((err) => {
+    console.log(err);
+  });
+};
 
 const find_post_by_id = function(post_id){
     return USER_POST.findOne({_id: post_id});
@@ -106,4 +149,7 @@ module.exports = {
     get_all_posts: get_all_posts,
     approve_post: approve_post,
     disapprove_post: disapprove_post,
+    update_like_number: update_like_number,
+    update_view_number: update_view_number,
+    update_comment_number: update_comment_number,
 };

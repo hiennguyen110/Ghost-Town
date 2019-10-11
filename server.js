@@ -90,6 +90,7 @@ var comment_prefix = [];
 server.get("/view-topic", function(req, res){
     if (req.isAuthenticated()){
         var topicID = url.parse(req.url, true).query.topicID;
+        postDatabase.update_view_number(topicID);
         postDatabase.find_post_by_id(topicID).then((result) => {
             tags_arr.push(result.post_tags.split(","));
             // This code in here is used to get all the comment related to this post
@@ -723,7 +724,40 @@ server.post("/add-reply-to-topic", function(req, res){
         var topicid = url.parse(req.url, true).query.topicid;
         commentsDatabase.create_comment(topicid, req.user.username, comment_content, () => {
             console.log("New comment has been added !!!");
-            res.redirect("/");
+            postDatabase.update_comment_number(topicid);
+            postDatabase.find_post_by_id(topicid).then((result) => {
+                tags_arr.push(result.post_tags.split(","));
+                // This code in here is used to get all the comment related to this post
+                commentsDatabase.get_all_comments(topicid).then((comments) => {
+                    userInfoDatabase.find_user(req.user.username).then((user) => {
+                        comments = comments.reverse();
+                        comments.forEach(element => {
+                            comment_prefix.push("#icon-ava-" + element.comment_author.charAt(0).toLowerCase());
+                        });
+                        namePrefix.push("#icon-ava-" + result.post_author.charAt(0).toLowerCase());
+                        userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
+                        res.render("page-single-topic", {
+                            topic: result,
+                            tags: tags_arr,
+                            comments: comments,
+                            nameSymbol: namePrefix,
+                            commentSymbol: comment_prefix,
+                            userSymbol: userSymbol,
+                            user_id: user,
+                        });
+                        tags_arr = [];
+                        namePrefix = [];
+                        comment_prefix = [];
+                        userSymbol = [];
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+               }).catch((err) => {
+                   console.log(err);
+               });
+            }).catch((err) => {
+                console.log(err);
+            });
         });
     } else {
         console.log("Access denied to administrator account !!!");
