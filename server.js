@@ -12,6 +12,7 @@ const categoryDatabase = require(__dirname + "/server_functions/categories.js");
 const postDatabase = require(__dirname + "/server_functions/posts.js");
 const worklistDatabase = require(__dirname + "/server_functions/worklist.js");
 const commentsDatabase = require(__dirname + "/server_functions/comments.js");
+const notificationDatabase = require(__dirname + "/server_functions/notifications.js");
 const dotenv = require("dotenv").config();
 const path = require("path");
 
@@ -87,6 +88,33 @@ server.get("/", function(req, res){
     }
 });
 
+var notification_arr = [];
+server.get("/view-notifications", function(req, res){
+  if (req.isAuthenticated()){
+    userInfoDatabase.find_user(req.user.username).then((user) => {
+      notificationDatabase.find_notification_by_owner(req.user.username).then((result) => {
+        userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
+        result.notification.forEach(element => {
+          notification_arr.push(element);
+        });
+        res.render("notifications", {
+          notifications: notification_arr,
+          userSymbol: userSymbol,
+          user_id: user,
+        });
+        notifications = [];
+        userSymbol = [];
+      }).catch((err) => {
+        console.log(err);
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+  } else {
+    res.redirect("/");
+  }
+});
+
 var comment_prefix = [];
 server.get("/view-topic", function(req, res){
     if (req.isAuthenticated()){
@@ -140,13 +168,13 @@ server.get("/view-categories", function(req, res){
           userSymbol: userSymbol,
           categories: categories,
         });
+        userSymbol = [];
       }).catch((err) => {
         console.log(err);
       });
     }).catch((err) => {
       console.log(err);
     });
-    userSymbol = [];
   } else {
       console.log("Access denied to administrator account !!!");
       res.redirect("/");

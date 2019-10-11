@@ -85,3 +85,12 @@ const remove_user_notification = function(owner, callback){
   // This function will remove all information of the user and their notification in the system
   NOTIFICATION.deleteOne({notification_owner: owner}, callback);
 };
+
+module.exports = {
+  create_notification: create_notification,
+  find_notification: find_notification,
+  find_notification_by_owner: find_notification_by_owner,
+  push_new_notification: push_new_notification,
+  remove_user_notification: remove_user_notification,
+  remove_notification_by_id: remove_notification_by_id,
+};
