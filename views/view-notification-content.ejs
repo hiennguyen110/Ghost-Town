@@ -1,0 +1,32 @@
+<%include header%>
+<body>
+<!-- tt-mobile menu -->
+
+<%include nav%>
+
+<main id="tt-pageContent">
+    <div class="container">
+        <div class="tt-single-topic-list">
+            <div class="tt-item">
+                 <div class="tt-single-topic">
+                    <div class="tt-item-header">
+                        <div class="tt-item-info info-top">
+                            <div class="tt-avatar-icon">
+                                <i class="tt-icon"><svg><use xlink:href="#icon-ava-s"></use></svg></i>
+                            </div>
+                        </div>
+                        <h3 class="tt-item-title">
+                            <a href="#"><%= notification_name%></a>
+                        </h3>
+                    </div>
+                    <div class="tt-item-description">
+                        <h6 class="tt-title"><%= notification_content%></h6>
+                    </div>
+                </div>
+            </div>
+    </div>
+</main>
+
+<%include create_new%>
+
+<%include footer%>

@@ -50,6 +50,12 @@ var tags_arr = [];
 var namePrefix = [];
 var topic = [];
 var userSymbol = [];
+var notification_arr = [];
+
+server.get("/test", function(req, res){
+    res.render("page-categories-single");
+});
+
 server.get("/", function(req, res){
     if (req.isAuthenticated()){
         console.log("User is authenticated !!!");
@@ -62,18 +68,22 @@ server.get("/", function(req, res){
                 namePrefix.push("#icon-ava-" + element.post_author.charAt(0).toLowerCase());
             });
             userInfoDatabase.find_user(req.user.username).then((user) => {
-              console.log(user);
-                userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
-                res.render("index", {
-                    topic: result,
-                    tags: tags_arr,
-                    nameSymbol: namePrefix,
-                    user_id: user,
-                    userSymbol: userSymbol,
-                });
-                tags_arr = [];
-                namePrefix = [];
-                userSymbol = [];
+              notificationDatabase.find_notification_by_owner(req.user.username).then((notification) => {
+                  console.log(user);
+                    userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
+                    res.render("index", {
+                        topic: result,
+                        tags: tags_arr,
+                        nameSymbol: namePrefix,
+                        user_id: user,
+                        userSymbol: userSymbol,
+                    });
+                    tags_arr = [];
+                    namePrefix = [];
+                    userSymbol = [];
+              }).catch((err) => {
+                 console.log(err);
+              });
             }).catch((err) => {
                 console.log(err);
             });
@@ -88,22 +98,27 @@ server.get("/", function(req, res){
     }
 });
 
-var notification_arr = [];
 server.get("/view-notifications", function(req, res){
   if (req.isAuthenticated()){
     userInfoDatabase.find_user(req.user.username).then((user) => {
       notificationDatabase.find_notification_by_owner(req.user.username).then((result) => {
-        userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
-        result.notification.forEach(element => {
-          notification_arr.push(element);
-        });
-        res.render("notifications", {
-          notifications: notification_arr,
-          userSymbol: userSymbol,
-          user_id: user,
-        });
-        notifications = [];
-        userSymbol = [];
+        if (result != null){
+            userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
+            result.notification.forEach(element => {
+              notification_arr.push(element);
+            });
+            res.render("notifications", {
+              notifications: notification_arr,
+              userSymbol: userSymbol,
+              user_id: user,
+            });
+            notification_arr = [];
+            userSymbol = [];
+        } else {
+            var message = "Wellcome to GhostTown, we are really to see you here :]]]";
+            notificationDatabase.create_notification(req.user.username, "Wellcome to GhostTown", message);
+            res.redirect("/view-notifications");
+        }
       }).catch((err) => {
         console.log(err);
       });
@@ -113,6 +128,48 @@ server.get("/view-notifications", function(req, res){
   } else {
     res.redirect("/");
   }
+});
+
+server.get("/view-notification-content", function(req, res){
+    // Change the seen status to true
+    if (req.isAuthenticated()){
+        var notification_id = url.parse(req.url, true).query.notification_id;
+        console.log(notification_id);
+        notificationDatabase.find_notification_by_owner(req.user.username).then((result) => {
+            userInfoDatabase.find_user(req.user.username).then((user) => {
+                userSymbol.push("#icon-ava-" + user.firstName.charAt(0).toLowerCase());
+                result.notification.forEach(element => {
+                    if(element._id == notification_id){
+                        console.log(element.notification_content);
+                        res.render("view-notification-content", {
+                            notification_name: element.notification_name,
+                            notification_content: element.notification_content,
+                            user_id: user,
+                            userSymbol: userSymbol,
+                        });
+                    }
+                });
+                userSymbol = [];
+            }).catch((err) => {
+                console.log(err);
+            });
+        }).catch((err) => {
+            console.log(err);
+        });
+    } else {
+        res.redirect("/");
+    }
+});
+
+server.get("/delete-notification", function(req, res){
+    if (req.isAuthenticated()){
+        var notification_id = url.parse(req.url, true).query.notification_id;
+        console.log(notification_id);
+        notificationDatabase.remove_notification_by_id(req.user.username, notification_id);
+        res.redirect("/view-notifications");
+    } else {
+        res.redirect("/");
+    }
 });
 
 var comment_prefix = [];
@@ -508,13 +565,13 @@ server.get("/add-post", function(req, res){
             userSymbol: userSymbol,
             categories: categories,
           });
+          userSymbol = [];
         }).catch((err) => {
           console.log(err);
         });
       }).catch((err) => {
         console.log(err);
       });
-      userSymbol = [];
     } else {
         console.log("Access denied to administrator account !!!");
         res.redirect("/");
@@ -547,7 +604,7 @@ server.post("/add-post", function(req, res){
         });
     } else {
         console.log("Access denied to administrator account !!!");
-        res.redirect("/admin-login");
+        res.redirect("/");
     }
 });
 // End of posts

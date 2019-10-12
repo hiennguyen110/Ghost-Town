@@ -5,59 +5,21 @@
 <%include nav%>
 
 <main id="tt-pageContent" class="tt-offset-small">
-  <div class="container">
-      <div class="tt-notifications-list">
-          <div class="tt-list-header">
-              <div class="tt-col-notifications">notifications</div>
-              <div class="tt-col-category">Category</div>
-              <div class="tt-col-value hide-mobile">Likes</div>
-              <div class="tt-col-value hide-mobile">Replies</div>
-              <div class="tt-col-value hide-mobile">Views</div>
-              <div class="tt-col-value">Activity</div>
-          </div>
+    <div class="container">
+        <div class="tt-topic-list">
 
-          <%include ghosttown_news%>
+            <%include ghosttown_news%>
 
-          <% for (var counter = 0; counter < notifications.length; ++counter) { %>
-              <div class="tt-item">
-                  <div class="tt-col-avatar">
-                      <svg class="tt-icon">
-                          <use xlink:href="<%=userSymbol%>"></use>
-                      </svg>
-                  </div>
-                  <div class="tt-col-description">
-                      <h6 class="tt-title"><a href="/view-notifications?notificationsID=<%= notifications[counter].notification_name%>">
-                          <!-- This is the name of the notifications -->
-                          <%= notifications[counter].notification_name%>
-                      </a></h6>
-                      <div class="row align-items-center no-gutters">
-                          <div class="col-11">
-
-                          </div>
-                          <div class="col-1 ml-auto show-mobile">
-                              <div class="tt-value">1d</div>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="tt-col-category"><span class="tt-color04 tt-badge"><%= notifications[counter].post_category%></span></div>
-                  <div class="tt-col-value  hide-mobile">308</div>
-                  <div class="tt-col-value tt-color-select  hide-mobile"><%=notifications[counter].post_comment_count%></div>
-                  <div class="tt-col-value  hide-mobile"><%=notifications[counter].post_view%></div>
-                  <div class="tt-col-value hide-mobile">1d</div>
-              </div>
-          <% } %>
-
-          <div class="tt-row-btn">
-              <button type="button" class="btn-icon js-notificationslist-showmore">
-                  <svg class="tt-icon">
-                    <use xlink:href="#icon-load_lore_icon"></use>
-                  </svg>
-              </button>
-          </div>
-      </div>
-  </div>
+            <div class="tt-row-btn">
+                <button type="button" class="btn-icon js-topiclist-showmore">
+                    <svg class="tt-icon">
+                      <use xlink:href="#icon-load_lore_icon"></use>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
 </main>
-
 <div id="js-popup-settings" class="tt-popup-settings">
 	<div class="tt-btn-col-close">
 		<a href="#">
@@ -194,7 +156,7 @@
 				        </label>
 				    </div>
 					<div class="form-group">
-						<label>Only return notificationss/posts that...</label>
+						<label>Only return topics/posts that...</label>
 						<div class="checkbox-group">
 					        <input type="checkbox" id="searcCheckBox02" name="checkbox">
 					        <label for="searcCheckBox02">
@@ -229,8 +191,8 @@
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="searchanotificationss">Where notificationss</label>
-						<select class="form-control" id="searchanotificationss">
+						<label for="searchaTopics">Where topics</label>
+						<select class="form-control" id="searchaTopics">
 							<option>any</option>
 							<option>value 01</option>
 							<option>value 02</option>

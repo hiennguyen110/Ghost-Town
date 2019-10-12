@@ -61,7 +61,7 @@ const push_new_notification = function(owner, notification_name, notification_co
   });
 };
 
-const remove_notification_by_id = function(owner, notification_id){
+const remove_notification_by_id = function(owner, notification_id, callback){
   find_notification_by_owner(owner).then((result) => {
     if (result != null){
       var notification_arr = [];
@@ -71,12 +71,11 @@ const remove_notification_by_id = function(owner, notification_id){
           notification_arr.push(element);
         }
       });
-       return NOTIFICATION.updateOne({notification_owner: owner}, {
+        return NOTIFICATION.updateOne({notification_owner: owner}, {
         notification: notification_arr,
-      });
+    });
     }
-    callback();
-  }).catch((err) => {
+}).catch((err) => {
     console.log(err);
   });
 };
